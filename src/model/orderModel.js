@@ -1,29 +1,47 @@
 const mongoose = require('mongoose');
 
+// {
+//   id: String,
+//   name: String,
+//   startDate: Date,
+//   endDate: Date,
+//   image: String,
+//   tickType: {
+//     price: Number,
+//     tickType: String,
+//   },
+//   price: Number,
+//   quantity: Number,
+// },
+
 const orderSchema = mongoose.Schema({
-  user: {
-    type: mongoose.Types.ObjectId, // 購買人
-    ref: 'User',
+  localId: {
+    type: String,
     required: true,
   },
+  name: String,
+  address: String,
+  tel: String,
+  total: Number,
   orderList: [
     {
-      type: mongoose.Types.ObjectId,
-      ref: 'Exhibition',
-      ticket: { type: Object }, //選擇票種
+      id: String,
+      name: String,
+      startDate: Date,
+      endDate: Date,
+      image: String,
+      tickType: {
+        price: Number,
+        tickType: String,
+      },
+      price: Number,
+      quantity: Number,
     },
   ],
-  time: {
+  createAt: {
     type: Date,
-    required: true,
+    default: new Date(),
   },
-});
-
-//填充 User Model
-orderSchema.pre(/^find/, (next) => {
-  this.populate('user');
-  this.populate('orderList');
-  next();
 });
 
 const Order = mongoose.model('Order', orderSchema);

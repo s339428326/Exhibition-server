@@ -12,6 +12,8 @@ dotenv.config({ path: 'config.env' });
 //router
 const userRouter = require('./routes/userRoutes');
 const exhibitionRouter = require('./routes/exhibitionRoute');
+const orderRouter = require('./routes/orderRoute');
+const startRouter = require('./routes/startRouter');
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use(express.json({ limit: '2mb' }));
 //router
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/exhibition', exhibitionRouter);
+app.use('/api/v1/order', orderRouter);
+app.use('/api/v1/start', startRouter);
 
 app.use(globalErrorHandler);
 

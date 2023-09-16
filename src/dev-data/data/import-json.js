@@ -29,7 +29,7 @@ function readJsonFile(fileName) {
 }
 
 const importData = async () => {
-  const exhibitionData = readJsonFile('data');
+  const exhibitionData = readJsonFile('exhibition-976a8-default-rtdb-export');
   try {
     await Exhibition.create(exhibitionData);
     // await User.create(users, { validateBeforeSave: false });
