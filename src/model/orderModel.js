@@ -1,19 +1,5 @@
 const mongoose = require('mongoose');
 
-// {
-//   id: String,
-//   name: String,
-//   startDate: Date,
-//   endDate: Date,
-//   image: String,
-//   tickType: {
-//     price: Number,
-//     tickType: String,
-//   },
-//   price: Number,
-//   quantity: Number,
-// },
-
 const orderSchema = mongoose.Schema({
   localId: {
     type: String,
