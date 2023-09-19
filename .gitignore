@@ -6,3 +6,5 @@ node_modules/
 DateBase-Model.png
 package-lock.json
 *.env
+
+statusCodeTable.txt

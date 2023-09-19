@@ -24,14 +24,8 @@ const exhibitionSchema = mongoose.Schema(
     },
     //image
     image: {
-      imageUrl: {
-        type: String,
-        default: '',
-      },
-      deleteHash: {
-        type: String,
-        default: '',
-      },
+      type: String,
+      default: '',
     },
     //展覽介紹
     introduce: {
@@ -59,15 +53,6 @@ const exhibitionSchema = mongoose.Schema(
 exhibitionSchema.virtual('active').get(function () {
   const now = new Date();
   return this.startDate <= now && now <= this.endDate;
-});
-
-//fix
-exhibitionSchema.virtual('location.city').get(function () {
-  if (this.location && this.location.address) {
-    // 從地址中取得前三個字來作為城市
-    return this.location.address.substring(0, 3);
-  }
-  return '';
 });
 
 const Exhibition = mongoose.model('Exhibition', exhibitionSchema);

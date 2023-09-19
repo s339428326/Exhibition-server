@@ -61,27 +61,35 @@ module.exports = (err, req, res, next) => {
 
     //E11000 duplicate key error
     if (err.code === 11000) {
-      const fieldsString = Object.keys(err.keyValue).reduce(
-        (preValue, currentValue) => `${preValue} `.concat(`${currentValue}`)
-      );
-      return sendErrorProd(
-        new AppError(`${fieldsString}已被使用，請重新填寫！`, 400),
-        req,
-        res
-      );
+      const errors = {};
+
+      const fieldsString = Object.keys(err.keyValue).forEach((keyname) => {
+        errors[keyname] = `${keyname}已被使用，請重新填寫！`;
+      });
+
+      // return sendErrorProd(
+      //   new AppError(`${fieldsString}已被使用，請重新填寫！`, 400),
+      //   req,
+      //   res
+      // );
+      return res.status(400).json({
+        status: 400,
+        errors,
+      });
     }
+
     if (err.name === 'JsonWebTokenError') {
-      return sendErrorDev(new AppError('Token 錯誤', 403), req, res);
+      return sendErrorProd(new AppError('Token 錯誤', 403), req, res);
     }
 
     if (err.name === 'CastError' && err.kind === 'ObjectId') {
-      return sendErrorDev(new AppError('Id 錯誤請確認', 403), req, res);
+      return sendErrorProd(new AppError('Id 錯誤請確認', 403), req, res);
     }
 
     //[Testing] prod 中可以看到錯誤內容
-    // sendErrorDev(err, req, res);
+    sendErrorDev(err, req, res);
 
     //[open]
-    sendErrorProd(err, req, res);
+    // sendErrorProd(err, req, res);
   }
 };

@@ -21,6 +21,6 @@ db.on('open', () => console.log('DateBase 連結成功！'));
 
 const server = app.listen(port, () =>
   console.log(
-    `NODE_ENV=${process.env.NODE_ENV}\nApplication Start Port:${port} `
+    `NODE_ENV=${process.env.NODE_ENV}\nApplication Start Port:${port}\n部署前記得更換NODE_ENV`
   )
 );

@@ -60,24 +60,6 @@ exports.patchOne = (Model) =>
     const modelName = Model.modelName.toLowerCase();
     let data = req.body;
 
-    if (modelName === 'artwork') {
-      //base64
-      if (req.body?.productImgSrc?.startsWith('data:image')) {
-        const base64 = req.body?.productImgSrc.split(',')[1];
-        if (!base64) return next(new AppError('找不到圖片檔案', 404));
-
-        const ImageResponse = await imgur.client.upload({
-          type: 'base64',
-          image: base64,
-          album: process.env.IMGUR_ALBUM,
-        });
-
-        if (ImageResponse.status === 400)
-          return next(new AppError('上傳超時請重新嘗試', 408));
-        data = { ...req.body, productImgSrc: ImageResponse.data.link };
-      }
-    }
-
     const doc = await Model.findByIdAndUpdate(req.params.id, data, {
       //選項指定當更新完成後，是否回傳更新後的文件，預設為 false，若設定為 true 則會回傳更新後的文件。
       new: true,

@@ -1,4 +1,3 @@
-const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 
 const AppError = require('../utils/AppError');
@@ -47,10 +46,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   //1.確認token 是否存在
   if (!token) return next(new AppError('您還未登入！', 401));
 
-  const { id, iat } = await promisify(jwt.verify)(
-    token,
-    process.env.JWT_SECRET
-  );
+  const { id, iat } = jwt.verify(token, process.env.JWT_SECRET);
 
   const user = await User.findById(id);
 
@@ -62,17 +58,27 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.isLogin = catchAsync(async (req, res, next) => {
+exports.authAndReturnUserData = catchAsync(async (req, res, next) => {
   const { authorization } = req.headers;
-  const token = authorization?.split(' ')[1];
+  let token = authorization?.startsWith('Bearer')
+    ? authorization?.split(' ')[1]
+    : authorization;
 
   if (!token) return next(new AppError('已登出', 403));
 
   //2.compare token is correct
-  const { id } = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
-  const { email, avatar, cover, name, role, intro, cart, trackArtworkList } =
-    await User.findById(id);
+  const {
+    email,
+    avatar,
+    cover,
+    username,
+    role,
+    intro,
+    cart,
+    trackArtworkList,
+  } = await User.findById(id);
   if (!email) return next(new AppError('請確認用戶是否存在', 404));
 
   //3.res pass
@@ -82,7 +88,7 @@ exports.isLogin = catchAsync(async (req, res, next) => {
       email,
       avatar,
       cover,
-      name,
+      username,
       role,
       id,
       intro,
@@ -108,10 +114,7 @@ exports.singUp = catchAsync(async (req, res, next) => {
   //未被建立返回 客製 Error
   if (!data) return next(new AppError('建立賬戶失敗 ！', 403));
 
-  res.status(200).json({
-    status: 'success',
-    data,
-  });
+  sendJwtToClient(data, 200, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
