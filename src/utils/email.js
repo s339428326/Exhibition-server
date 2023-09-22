@@ -3,7 +3,6 @@ const ejs = require('ejs');
 const { htmlToText } = require('html-to-text');
 const nodemailer = require('nodemailer'); //https://nodemailer.com/about/
 
-//期望功能
 // new Email(user, url).sendWelcome();
 //user => req.user
 //url => API
@@ -12,41 +11,47 @@ const nodemailer = require('nodemailer'); //https://nodemailer.com/about/
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
-    this.firstName = user.name.split(' ')[0];
+    this.firstName = user.username;
     this.url = url;
-    this.form = `Natours office <${process.env.EMAIL_FROM_PROD}>`;
+    this.form = `Exhibition office <${process.env.EMAIL_FROM_PROD}>`;
   }
 
   newTransport() {
+    //
     if (process.env.NODE_ENV === 'production') {
-      //sendGrid
+      // 使用SendGrid SMTP 方式
       return nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_API,
+          user: 'apikey',
+          pass: process.env.SENDGRID_API_KEY,
         },
       });
     }
 
-    //nodemailer transport setting
+
     return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST, //mailtrap server
-      port: process.env.EMAIL_PORT, //mailtrap 2525
+      host: 'sandbox.smtp.mailtrap.io',
+      port: process.env?.EMAIL_PORT,
       auth: {
-        user: process.env.EMAIL_USERNAME, //mailtrap provide
-        pass: process.env.EMAIL_PASSWORD, //mailtrap provide
+        user: process.env?.EMAIL_USERNAME,
+        pass: process.env?.EMAIL_PASSWORD,
       },
     });
   }
 
-  //選擇傳送template, subject 標題
+  /**
+   *
+   * @param {FileName} content : EJS template Choose src/template/email/{content}.ejs
+   * @param {String} subject
+   */
   async send(content, subject) {
+    console.log(`${__dirname}/../assets/template/email/email.ejs`);
     const htmlFile = await ejs.renderFile(
-      `${__dirname}/../views/pages/email/email.ejs`,
+      `${__dirname}/../assets/template/email/email.ejs`,
       {
         firstName: this.firstName,
-        url: this.url,
+        url: `${this.url}`,
         subject,
         content,
       }
@@ -64,13 +69,14 @@ module.exports = class Email {
     await this.newTransport().sendMail(mailOption);
   }
 
+  //新增信箱Template 內容
   async sendWelcome() {
-    //template
-    await this.send('welcome', 'Welcome to the Natrous!');
+    //template(EJS Template Name, subject)
+    await this.send('welcome', 'Welcome to the Search Art Fair!');
   }
 
   async sendResetPassword() {
     //template
-    await this.send('forgetPassword', 'Natrous Password Reset');
+    await this.send('forgetPassword', 'Search Art Fair Reset');
   }
 };

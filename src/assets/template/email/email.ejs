@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title><%= subject %></title>
+    <%- include('__emailStyle') %>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1 class="title">
+          <a class="fs-4 font-quantum l-h-1" to="/">
+            <div class="d-flex">
+              <span class="fw-normal text-secondary fs-4">A</span>
+              <span class="fw-normal fs-4 text-light">rt</span>
+            </div>
+            <span class="fw-normal fs-4 text-light"> Search </span>
+            <p class="text-secondary">Fair</p>
+          </a>
+        </h1>
+        <%- include(`${content}`) %>
+      </div>
+    </div>
+  </body>
+</html>

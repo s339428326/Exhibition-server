@@ -1,4 +1,6 @@
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const Email = require('../utils/Email.js');
 
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
@@ -111,6 +113,19 @@ exports.singUp = catchAsync(async (req, res, next) => {
     confirmPassword,
   });
 
+  await new Email(
+    data,
+    `${
+      process.env?.[
+        `${
+          process.env.NODE_ENV === 'production'
+            ? 'FRONT_END_SERVER'
+            : 'FRONT_END_LOCAL'
+        }`
+      ]
+    }/Exhibition-front-end/`
+  ).sendWelcome();
+
   //未被建立返回 客製 Error
   if (!data) return next(new AppError('建立賬戶失敗 ！', 403));
 
@@ -193,5 +208,86 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   sendJwtToClient(user, 200, req, res);
 });
 
-//忘記密碼(信箱功能) 未開發
-exports.forgetPassword = catchAsync(async (req, res, next) => {});
+//
+exports.forgetPassword = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) return next(new AppError('此帳戶不存在', 404));
+  const resetToken = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  //3.Send it to user's email
+  const resetURL = `${
+    process.env?.[
+      `${
+        process.env.NODE_ENV === 'production'
+          ? 'FRONT_END_SERVER'
+          : 'FRONT_END_LOCAL'
+      }`
+    ]
+  }/Exhibition-front-end/#/resetPassword/${resetToken}`;
+
+  try {
+    await new Email(user, resetURL).sendResetPassword();
+    res.status(200).json({
+      status: 'success',
+      message: '已發送Token 至信箱',
+    });
+  } catch (error) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    return next(new AppError('發送郵件發生錯誤，請重新嘗試！'), 500);
+  }
+});
+
+exports.checkResetToken = catchAsync(async (req, res, next) => {
+  const resetToken = req.params?.token;
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  //get Token a
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) return next(new AppError('更改密碼信件到期，請重新嘗試'), 400);
+
+  res.status(200).json({
+    status: 'success',
+    message: '信件加密正確, 並在期間內！',
+  });
+});
+
+//user reset password.
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  //compare token
+  const resetToken = req.params.token;
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) return next(new AppError('更改密碼信件到期，請重新嘗試'), 400);
+
+  //完成密碼更改
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined; //重置ResetToken
+  user.passwordResetExpires = undefined; //重置ResetExpires
+
+  await user.save(); //?? [FIX]
+
+  res.status(200).json({
+    status: 'success',
+    message: '密碼更改成功！',
+  });
+});
