@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const Email = require('../utils/Email.js');
+const Email = require('../utils/email.js');
 
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
