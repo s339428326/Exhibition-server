@@ -254,7 +254,7 @@ exports.checkResetToken = catchAsync(async (req, res, next) => {
     passwordResetExpires: { $gt: Date.now() },
   });
 
-  if (!user) return next(new AppError('更改密碼信件到期，請重新嘗試'), 400);
+  if (!user) return next(new AppError('更改信件到期，請重新嘗試'), 400);
 
   res.status(200).json({
     status: 'success',
@@ -276,18 +276,86 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     passwordResetExpires: { $gt: Date.now() },
   });
 
-  if (!user) return next(new AppError('更改密碼信件到期，請重新嘗試'), 400);
+  if (!user) return next(new AppError('信件到期，請重新嘗試'), 400);
 
   //完成密碼更改
   user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
+  user.confirmPassword = req.body.confirmPassword;
   user.passwordResetToken = undefined; //重置ResetToken
   user.passwordResetExpires = undefined; //重置ResetExpires
 
-  await user.save(); //?? [FIX]
+  await user.save({ validateBeforeSave: false });
 
   res.status(200).json({
     status: 'success',
     message: '密碼更改成功！',
   });
+});
+
+//user reset email.
+exports.resetEmail = catchAsync(async (req, res, next) => {
+  console.log(req.params.token);
+  //compare token
+  const resetToken = req.params.token;
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) return next(new AppError('信件到期，請重新嘗試'), 400);
+
+  //確認修改信箱是否已存在於DateBase
+  const checkEmailDataBase = await User.find({ email: req.body?.email });
+  if (!checkEmailDataBase) return next(new AppError('此信箱以使用'), 403);
+
+  //完成密碼更改
+  user.email = req.body.email;
+
+  user.passwordResetToken = undefined; //重置ResetToken
+  user.passwordResetExpires = undefined; //重置ResetExpires
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: 'success',
+    message: '信箱更改成功！',
+  });
+});
+
+exports.changeEmail = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) return next(new AppError('此帳戶不存在', 404));
+  const resetToken = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  //3.Send it to user's email
+  const resetURL = `${
+    process.env?.[
+      `${
+        process.env.NODE_ENV === 'production'
+          ? 'FRONT_END_SERVER'
+          : 'FRONT_END_LOCAL'
+      }`
+    ]
+  }/Exhibition-front-end/#/changeEmail/${resetToken}`;
+
+  try {
+    await new Email(user, resetURL).sendChangeEmail(); //fix
+    res.status(200).json({
+      status: 'success',
+      message: '已發送Token 至信箱',
+    });
+  } catch (error) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    return next(new AppError('發送郵件發生錯誤，請重新嘗試！'), 500);
+  }
 });

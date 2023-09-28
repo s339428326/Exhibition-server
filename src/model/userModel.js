@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
       default: 'user',
       required: true,
       enum: {
-        values: ['user', 'pro-user', 'honor-user', 'admin'],
+        values: ['user', 'inspector', 'host', 'admin'], // 用戶, 檢票人員, 主辦人, 後台管理權限
         message: '出現錯誤權限用戶',
       },
     },

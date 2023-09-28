@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = require('./app');
 
@@ -21,6 +22,12 @@ db.on('open', () => console.log('DateBase 連結成功！'));
 
 const server = app.listen(port, () =>
   console.log(
-    `NODE_ENV=${process.env.NODE_ENV}\nApplication Start Port:${port}\n部署前記得更換NODE_ENV`
+    `NODE_ENV=${
+      process.env.NODE_ENV
+    }\nApplication Start Port:${port}\n前端主機位置抓取：${
+      process.env.NODE_ENV === 'production'
+        ? process.env?.FRONT_END_SERVER
+        : process.env?.FRONT_END_LOCAL
+    }`
   )
 );

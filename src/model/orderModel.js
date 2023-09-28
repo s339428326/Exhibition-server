@@ -1,14 +1,18 @@
 const mongoose = require('mongoose');
 
-const orderSchema = mongoose.Schema({
-  localId: {
-    type: String,
+const orderSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.ObjectId,
     required: true,
   },
   name: String,
   address: String,
-  tel: String,
+  phone: String,
   total: Number,
+  isPay: {
+    type: Boolean,
+    default: false,
+  },
   orderList: [
     {
       id: String,
@@ -16,12 +20,13 @@ const orderSchema = mongoose.Schema({
       startDate: Date,
       endDate: Date,
       image: String,
-      tickType: {
-        price: Number,
-        tickType: String,
-      },
+      ticketType: Object,
       price: Number,
       quantity: Number,
+      isAvailable: {
+        type: Boolean,
+        default: true,
+      },
     },
   ],
   createAt: {
