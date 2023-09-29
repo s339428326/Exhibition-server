@@ -45,11 +45,7 @@ exports.createECOrder = catchAsync(async (req, res, next) => {
     TotalAmount: '100',
     TradeDesc: '測試交易描述',
     ItemName: '測試商品等#測試商品2', //商品名稱，若有多筆，需在金流選擇頁 一行一行顯示, 商品名增請以#字號分開
-    ReturnURL: `${
-      process.env.NODE_ENV === 'development'
-        ? process.env.FRONT_END_LOCAL
-        : process.env.FRONT_END_SERVER
-    }/payment`,
+    ReturnURL: `http://localhost:7301/api/v1/ec/checkMAC`, //API TO CHECK MAC
     ClientBackURL: `${
       process.env.NODE_ENV === 'development'
         ? process.env.FRONT_END_LOCAL
@@ -69,6 +65,7 @@ exports.createECOrder = catchAsync(async (req, res, next) => {
   };
 
   const create = new ecpay_payment(options);
+  console.log(create);
   const html = create.payment_client.aio_check_out_all(base_param);
 
   res.status(200).json({
@@ -79,4 +76,31 @@ exports.createECOrder = catchAsync(async (req, res, next) => {
     }/payment`,
     html,
   });
+});
+
+exports.checkMac = catchAsync(async (req, res, next) => {
+  console.log('req.body:', req.body);
+
+  const { CheckMacValue } = req.body;
+  const data = { ...req.body };
+  delete data.CheckMacValue; // 此段不驗證
+
+  const create = new ecpay_payment(options);
+  const checkValue = create.payment_client.helper.gen_chk_mac_value(data);
+
+  console.log(
+    '確認交易正確性：',
+    CheckMacValue === checkValue,
+    CheckMacValue,
+    checkValue
+  );
+
+  // 交易成功後，需要回傳 1|OK 給綠界
+  res.send('1|OK');
+
+  // 用戶交易完成後的轉址
+  //   router.get('/clientReturn', (req, res) => {
+  //     console.log('clientReturn:', req.body, req.query);
+  //     res.render('return', { query: req.query });
+  //   });
 });
