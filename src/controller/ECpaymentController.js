@@ -45,7 +45,7 @@ exports.createECOrder = catchAsync(async (req, res, next) => {
     TotalAmount: '100',
     TradeDesc: '測試交易描述',
     ItemName: '測試商品等#測試商品2', //商品名稱，若有多筆，需在金流選擇頁 一行一行顯示, 商品名增請以#字號分開
-    ReturnURL: `http://localhost:7301/api/v1/ec/checkMAC`, //API TO CHECK MAC
+    ReturnURL: `${req.header.host}/api/v1/ec/checkMAC`, //API TO CHECK MAC
     ClientBackURL: `${
       process.env.NODE_ENV === 'development'
         ? process.env.FRONT_END_LOCAL
@@ -65,7 +65,6 @@ exports.createECOrder = catchAsync(async (req, res, next) => {
   };
 
   const create = new ecpay_payment(options);
-  console.log(create);
   const html = create.payment_client.aio_check_out_all(base_param);
 
   res.status(200).json({
