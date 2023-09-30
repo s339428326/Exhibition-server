@@ -46,17 +46,17 @@ exports.createECOrder = catchAsync(async (req, res, next) => {
     TotalAmount: '100',
     TradeDesc: '測試交易描述',
     ItemName: '測試商品等#測試商品2', //商品名稱，若有多筆，需在金流選擇頁 一行一行顯示, 商品名增請以#字號分開
-    OrderResultURL: `${
+    // OrderResultURL: `${
+    //   process.env.NODE_ENV === 'development'
+    //     ? process.env.FRONT_END_LOCAL
+    //     : process.env.FRONT_END_SERVER
+    // }/#/`,
+    ReturnURL: `https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/api/v1/ec/checkMAC`, //API TO CHECK MAC
+    ClientBackURL: `${
       process.env.NODE_ENV === 'development'
         ? process.env.FRONT_END_LOCAL
         : process.env.FRONT_END_SERVER
     }/`,
-    ReturnURL: `https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/api/v1/ec/checkMAC`, //API TO CHECK MAC
-    // ClientBackURL: `${
-    //   process.env.NODE_ENV === 'development'
-    //     ? process.env.FRONT_END_LOCAL
-    //     : process.env.FRONT_END_SERVER
-    // }/`,
     // ChooseSubPayment: '',
     // NeedExtraPaidInfo: '1',
     // ItemURL: 'http://item.test.tw',
