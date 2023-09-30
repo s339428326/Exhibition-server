@@ -1,4 +1,4 @@
 {
   "builds": [{ "src": "server.js", "use": "@now/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/api" }]
+  "routes": [{ "src": "/api/(.*)", "dest": "/api" }]
 }
