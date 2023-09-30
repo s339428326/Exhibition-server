@@ -29,10 +29,11 @@ app.use(cors());
 app.use(express.json({ limit: '2mb' })); //req 超過2mb 會停止回應
 
 //Views Router
-// app.get('/payment', (req, res) => {
-
-//   res.render('payment', { html });
-// });
+const router = express.Router();
+app.post('/payment', (req, res) => {
+  console.log(req.body);
+  res.render('payment');
+});
 
 //API router
 app.use('/api/v1/user', userRouter);
