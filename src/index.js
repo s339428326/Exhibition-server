@@ -16,7 +16,10 @@ const db = mongoose.connection;
 //   }
 // );
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(
+  'mongodb+srv://vercel-admin-user:g2iXNznCcGm6VMWO@cluster0.fifyfex.mongodb.net/exhibition?retryWrites=true&w=majority',
+  { useNewUrlParser: true }
+);
 
 db.on('error', () => console.log('DateBase 連結失敗！'));
 db.on('open', () => console.log('DateBase 連結成功！'));
