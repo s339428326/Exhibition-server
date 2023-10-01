@@ -9,12 +9,9 @@ const port = process.env.PORT || 8080;
 
 const db = mongoose.connection;
 
-mongoose.connect(
-  process.env.DATABASE.replace('<password>', process.env.DB_PASSWORD),
-  {
-    useNewUrlParser: true,
-  }
-);
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+});
 
 // mongoose.connect(process.env.MONGODB_URI,{ useNewUrlParser: true,})
 
