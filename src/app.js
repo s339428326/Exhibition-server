@@ -8,14 +8,15 @@ const globalErrorHandler = require('./controller/errorController');
 //env
 dotenv.config({ path: 'config.env' });
 
+const api = require('./routes/index');
 //router
-const userRouter = require('./routes/userRoutes');
-const exhibitionRouter = require('./routes/exhibitionRoute');
-const orderRouter = require('./routes/orderRoute');
-const startRouter = require('./routes/startRoute');
-const authRouter = require('./routes/authRoute');
-const ticketRouter = require('./routes/ticketRoutes');
-const ecRouter = require('./routes/ecRoutes');
+// const userRouter = require('./routes/userRoutes');
+// const exhibitionRouter = require('./routes/exhibitionRoute');
+// const orderRouter = require('./routes/orderRoute');
+// const startRouter = require('./routes/startRoute');
+// const authRouter = require('./routes/authRoute');
+// const ticketRouter = require('./routes/ticketRoutes');
+// const ecRouter = require('./routes/ecRoutes');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -29,15 +30,16 @@ app.use(cors());
 app.use(express.json({ limit: '2mb' })); //req 超過2mb 會停止回應
 
 //API router
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/exhibition', exhibitionRouter);
-app.use('/api/v1/order', orderRouter);
-app.use('/api/v1/ticket', ticketRouter);
-app.use('/api/v1/ec', ecRouter);
+// app.use('/api/v1/user', userRouter);
+// app.use('/api/v1/auth', authRouter);
+// app.use('/api/v1/exhibition', exhibitionRouter);
+// app.use('/api/v1/order', orderRouter);
+// app.use('/api/v1/ticket', ticketRouter);
+// app.use('/api/v1/ec', ecRouter);
 
-//特殊需求(heroku 喚醒)
-app.use('/api/v1/start', startRouter);
+// //特殊需求(heroku 喚醒)
+// app.use('/api/v1/start', startRouter);
+app.use('/api/v1', api);
 
 //
 app.use(globalErrorHandler);
