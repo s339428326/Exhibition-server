@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const mongoDB = require('./mongoDB');
 
 const globalErrorHandler = require('./controller/errorController');
 
@@ -13,6 +14,7 @@ const api = require('./routes/index');
 const app = express();
 // app.set('view engine', 'ejs');
 // app.set('views', `${__dirname}/views`);
+mongoDB();
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));

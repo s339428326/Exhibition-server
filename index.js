@@ -7,16 +7,14 @@ dotenv.config({ path: 'config.env' });
 
 const port = process.env.PORT || 8080;
 
-const db = mongoose.connection;
+// const db = mongoose.connection;
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-});
+// mongoose.connect(process.env.MONGODB_URI, {
+//   useNewUrlParser: true,
+// });
 
-// mongoose.connect(process.env.MONGODB_URI,{ useNewUrlParser: true,})
-
-db.on('error', () => console.log('DateBase 連結失敗！'));
-db.on('open', () => console.log('DateBase 連結成功！'));
+// db.on('error', () => console.log('DateBase 連結失敗！'));
+// db.on('open', () => console.log('DateBase 連結成功！'));
 
 const server = app.listen(port, () =>
   console.log(
