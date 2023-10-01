@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node api/index.js",
+    "start": "node api/index.js --port 8080",
     "dev": "nodemon api/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "NODE_ENV=production nodemon api/index.js",
