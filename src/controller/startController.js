@@ -6,8 +6,13 @@ const Exhibition = require('../model/exhibitionModel');
 exports.startUp = catchAsync(async (req, res, next) => {
   const exhibition = await Exhibition.find({});
 
+  console.log(exhibition);
+
   if (!exhibition.length)
-    return next(new AppError('MongoDB vercel fail!', 404));
+    return res.status(404).json({
+      status: 'start',
+      message: 'vercel next middleware fail!',
+    });
 
   //test get env var
   res.status(200).json({
