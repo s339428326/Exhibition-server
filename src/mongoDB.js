@@ -9,5 +9,4 @@ module.exports = mongoDBConnect = () => {
 
   db.on('error', () => console.log('DateBase 連結失敗！'));
   db.on('open', () => console.log('DateBase 連結成功！'));
-  console.log(location.port);
 };
