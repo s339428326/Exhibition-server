@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const exhibitionSchema = mongoose.Schema(
+const exhibitionSchema = new mongoose.Schema(
   {
     //名稱
     name: {

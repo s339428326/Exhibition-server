@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.get('/', (req, res) => {
-  res.send('<h1>123</h1>');
+  res.send('<h1>Exhibition APIs Start!</h1>');
 });
 
 app.use(cors());
