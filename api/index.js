@@ -1,3 +1,5 @@
-const app = require('../src/app');
+const express = require('express');
 
-module.exports = app;
+const router = express.Router();
+
+module.exports = router;

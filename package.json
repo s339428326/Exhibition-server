@@ -4,11 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node src/server.js --port 443",
-    "dev": "nodemon src/server.js",
+    "start": "node src/index.js --port 443",
+    "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prod": "NODE_ENV=production nodemon src/server.js",
-    "debug": "ndb server.js",
+    "prod": "NODE_ENV=production nodemon src/index.js",
+    "debug": "ndb index.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url /js",
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url /js"
   },
