@@ -74,7 +74,7 @@ app.get('/', (req, res) => {
   const html = create.payment_client.aio_check_out_all(base_param);
   console.log(html);
 
-  res.render('payment', html);
+  res.send(html);
 });
 
 // 後端接收綠界回傳的資料
@@ -102,7 +102,7 @@ app.post('/return', async (req, res) => {
 // 用戶交易完成後的轉址
 app.get('/clientReturn', (req, res) => {
   console.log('clientReturn:', req.body, req.query);
-  res.render('payment', { query: req.query });
+  res.send('Done!');
 });
 
 //////////////////////////
