@@ -68,11 +68,12 @@ app.get('/', (req, res) => {
     // }/#/`,
     // https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/api/v1/ec/checkMAC
     ReturnURL: `${HOST}/return`, //API TO CHECK MAC
-    ClientBackURL: `${
-      process.env.NODE_ENV === 'development'
-        ? process.env.FRONT_END_LOCAL
-        : process.env.FRONT_END_SERVER
-    }/`,
+    ClientBackURL: `${HOST}/client`,
+    // ClientBackURL: `${
+    //   process.env.NODE_ENV === 'development'
+    //     ? process.env.FRONT_END_LOCAL
+    //     : process.env.FRONT_END_SERVER
+    // }/`,
     // ChooseSubPayment: '',
     // NeedExtraPaidInfo: '1',
     // ItemURL: 'http://item.test.tw',
@@ -108,6 +109,12 @@ app.post('/return', async (req, res) => {
 
   // 交易成功後，需要回傳 1|OK 給綠界
   res.send('1|OK');
+});
+
+app.get('/client', (req, res) => {
+  res.send(
+    '<h1>付款完成：前往查看結果 ：\nhttps://vercel.com/s339428326s-projects/exhibition-server/logs</h1>'
+  );
 });
 
 //////////////////////////
