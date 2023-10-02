@@ -67,7 +67,7 @@ app.get('/', (req, res) => {
     //     : process.env.FRONT_END_SERVER
     // }/#/`,
     // https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/api/v1/ec/checkMAC
-    ReturnURL: `https://exhibition-server.vercel.app/return`, //API TO CHECK MAC
+    ReturnURL: `${HOST}/return`, //API TO CHECK MAC
     ClientBackURL: `${
       process.env.NODE_ENV === 'development'
         ? process.env.FRONT_END_LOCAL
