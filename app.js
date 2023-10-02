@@ -11,8 +11,8 @@ const mongoDB = require('./src/mongoDB');
 const api = require('./src/routes/index');
 
 const app = express();
-// app.set('view engine', 'ejs');
-// app.set('views', `${__dirname}/views`);
+app.set('view engine', 'ejs');
+app.set('views', `${__dirname}/views`);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -73,7 +73,7 @@ router.get('/', (req, res) => {
   const html = create.payment_client.aio_check_out_all(base_param);
   console.log(html);
 
-  res.send(html);
+  res.render('payment', html);
 });
 
 // 後端接收綠界回傳的資料
@@ -101,7 +101,7 @@ router.post('/return', async (req, res) => {
 // 用戶交易完成後的轉址
 router.get('/clientReturn', (req, res) => {
   console.log('clientReturn:', req.body, req.query);
-  res.send({ query: req.query });
+  res.render('payment', { query: req.query });
 });
 
 //////////////////////////
