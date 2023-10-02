@@ -44,7 +44,7 @@ const options = {
 };
 let TradeNo;
 
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   // SDK 提供的範例，參數設定
   // https://github.com/ECPay/ECPayAIO_Node.js/blob/master/ECPAY_Payment_node_js/conf/config-example.js
   const MerchantTradeDate = new Date().toLocaleString('zh-TW', {
@@ -77,7 +77,7 @@ router.get('/', (req, res) => {
 });
 
 // 後端接收綠界回傳的資料
-router.post('/return', async (req, res) => {
+app.post('/return', async (req, res) => {
   console.log('req.body:', req.body);
 
   const { CheckMacValue } = req.body;
@@ -99,7 +99,7 @@ router.post('/return', async (req, res) => {
 });
 
 // 用戶交易完成後的轉址
-router.get('/clientReturn', (req, res) => {
+app.get('/clientReturn', (req, res) => {
   console.log('clientReturn:', req.body, req.query);
   res.render('payment', { query: req.query });
 });
