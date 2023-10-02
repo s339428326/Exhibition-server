@@ -52,7 +52,7 @@ exports.createECOrder = catchAsync(async (req, res, next) => {
     //     : process.env.FRONT_END_SERVER
     // }/#/`,
     // https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/api/v1/ec/checkMAC
-    ReturnURL: `https://exhibition-server.vercel.app/return`, //API TO CHECK MAC
+    ReturnURL: `${HOST}/return`, //API TO CHECK MAC
     ClientBackURL: `${
       process.env.NODE_ENV === 'development'
         ? process.env.FRONT_END_LOCAL
@@ -102,10 +102,4 @@ exports.checkMac = catchAsync(async (req, res, next) => {
 
   // 交易成功後，需要回傳 1|OK 給綠界
   res.send('1|OK');
-
-  // 用戶交易完成後的轉址
-  //   router.get('/clientReturn', (req, res) => {
-  //     console.log('clientReturn:', req.body, req.query);
-  //     res.render('return', { query: req.query });
-  //   });
 });

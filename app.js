@@ -9,7 +9,6 @@ dotenv.config({ path: 'config.env' });
 
 const mongoDB = require('./src/mongoDB');
 const api = require('./src/routes/index');
-const view = require('./src/routes/paymentRoute');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -23,9 +22,9 @@ mongoDB();
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' })); //req 超過2mb 會停止回應
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); //解析外部回傳, extended:false禁止外部使用字串query DB
 
-app.use('/', view);
+// app.use('/', view);
 app.use('/api/v1', api);
 
 //
