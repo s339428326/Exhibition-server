@@ -21,9 +21,10 @@ mongoDB();
 
 //////////////////////////
 const crypto = require('crypto');
-const ecpay_payment = require('ecpay_aio_nodejs');
-
 const { MERCHANTID, HASHKEY, HASHIV, HOST } = process.env;
+
+// SDK 提供的範例，初始化
+// https://github.com/ECPay/ECPayAIO_Node.js/blob/master/ECPAY_Payment_node_js/conf/config-example.js
 const options = {
   OperationMode: 'Test', //Test or Production
   MercProfile: {
@@ -41,60 +42,44 @@ const options = {
   ],
   IsProjectContractor: false,
 };
+let TradeNo;
 
-const MerchantTradeDate = new Date().toLocaleString('zh-TW', {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hour12: false,
-  timeZone: 'UTC',
-});
-
-app.get('/', (req, res) => {
-  const uid = crypto.randomBytes(10).toString('hex');
-
-  //基本參數設置
+router.get('/', (req, res) => {
+  // SDK 提供的範例，參數設定
+  // https://github.com/ECPay/ECPayAIO_Node.js/blob/master/ECPAY_Payment_node_js/conf/config-example.js
+  const MerchantTradeDate = new Date().toLocaleString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'UTC',
+  });
+  TradeNo = 'test' + new Date().getTime();
   let base_param = {
-    MerchantTradeNo: uid, //請帶20碼uid, ex: f0a0d7e9fae1bb72bc93
-    MerchantTradeDate, //ex: 2017/02/13 15:45:30
+    MerchantTradeNo: TradeNo, //請帶20碼uid, ex: f0a0d7e9fae1bb72bc93
+    MerchantTradeDate,
     TotalAmount: '100',
     TradeDesc: '測試交易描述',
-    ItemName: '測試商品等#測試商品2', //商品名稱，若有多筆，需在金流選擇頁 一行一行顯示, 商品名增請以#字號分開
-    // OrderResultURL: `${
-    //   process.env.NODE_ENV === 'development'
-    //     ? process.env.FRONT_END_LOCAL
-    //     : process.env.FRONT_END_SERVER
-    // }/#/`,
-    // https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/api/v1/ec/checkMAC
-    ReturnURL: `${HOST}/return`, //API TO CHECK MAC
-    ClientBackURL: `${HOST}/client`,
-    // ClientBackURL: `${
-    //   process.env.NODE_ENV === 'development'
-    //     ? process.env.FRONT_END_LOCAL
-    //     : process.env.FRONT_END_SERVER
-    // }/`,
-    // ChooseSubPayment: '',
-    // NeedExtraPaidInfo: '1',
-    // ItemURL: 'http://item.test.tw',
-    // Remark: '交易備註',
-    // HoldTradeAMT: '1',
-    // StoreID: '',
-    // CustomField1: '',
-    // CustomField2: '',
-    // CustomField3: '',
-    // CustomField4: ''
+    ItemName: '測試商品等',
+    ReturnURL: `${HOST}/return`,
+    ClientBackURL: `${HOST}/clientReturn`,
   };
-
   const create = new ecpay_payment(options);
+
+  // 注意：在此事直接提供 html + js 直接觸發的範例，直接從前端觸發付款行為
   const html = create.payment_client.aio_check_out_all(base_param);
+  console.log(html);
+
   res.send(html);
 });
 
-app.post('/return', async (req, res) => {
+// 後端接收綠界回傳的資料
+router.post('/return', async (req, res) => {
   console.log('req.body:', req.body);
+
   const { CheckMacValue } = req.body;
   const data = { ...req.body };
   delete data.CheckMacValue; // 此段不驗證
@@ -113,10 +98,10 @@ app.post('/return', async (req, res) => {
   res.send('1|OK');
 });
 
-app.get('/client', (req, res) => {
-  res.send(
-    '<h1>付款完成：前往查看結果 ：\nhttps://vercel.com/s339428326s-projects/exhibition-server/logs</h1>'
-  );
+// 用戶交易完成後的轉址
+router.get('/clientReturn', (req, res) => {
+  console.log('clientReturn:', req.body, req.query);
+  res.send({ query: req.query });
 });
 
 //////////////////////////
