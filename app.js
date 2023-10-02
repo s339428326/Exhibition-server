@@ -2,13 +2,13 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const dotenv = require('dotenv');
-
-const globalErrorHandler = require('./controller/errorController');
+const globalErrorHandler = require('./src/controller/errorController');
 
 //env
 dotenv.config({ path: 'config.env' });
 
-const api = require('./routes/index');
+const mongoDB = require('./src/mongoDB');
+const api = require('./src/routes/index');
 
 const app = express();
 // app.set('view engine', 'ejs');
@@ -17,6 +17,8 @@ const app = express();
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+mongoDB();
+
 //////////////////////////
 const crypto = require('crypto');
 const ecpay_payment = require('ecpay_aio_nodejs');
@@ -127,4 +129,16 @@ app.use('/api/v1', api);
 //
 app.use(globalErrorHandler);
 
-module.exports = app;
+const port = process.env.PORT || 3000;
+
+app.listen(port, () =>
+  console.log(
+    `NODE_ENV=${
+      process.env.NODE_ENV
+    }\nApplication Start Port:${port}\n前端主機位置抓取：${
+      process.env.NODE_ENV === 'production'
+        ? process.env?.FRONT_END_SERVER
+        : process.env?.FRONT_END_LOCAL
+    }`
+  )
+);
