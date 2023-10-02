@@ -5,7 +5,7 @@ const mongoDB = require('../src/mongoDB');
 
 dotenv.config({ path: 'config.env' });
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 443;
 
 mongoDB();
 
