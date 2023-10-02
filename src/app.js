@@ -90,7 +90,7 @@ app.get('/', (req, res) => {
   res.send(html);
 });
 
-app.post('/return', (req, res) => {
+app.post('/return', async (req, res) => {
   console.log('req.body:', req.body);
   const { CheckMacValue } = req.body;
   const data = { ...req.body };
