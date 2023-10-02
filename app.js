@@ -21,6 +21,7 @@ mongoDB();
 
 //////////////////////////
 const crypto = require('crypto');
+const ecpay_payment = require('ecpay_aio_nodejs');
 const { MERCHANTID, HASHKEY, HASHIV, HOST } = process.env;
 
 // SDK 提供的範例，初始化
