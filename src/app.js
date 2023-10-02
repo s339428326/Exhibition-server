@@ -23,9 +23,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/return', (req, res) => {
-  console.log('req.body:', req.body, res);
-
   const { CheckMacValue } = req.body;
+  console.log('req.body:', req.body, CheckMacValue);
   const data = { ...req.body };
   delete data.CheckMacValue; // 此段不驗證
 
