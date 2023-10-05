@@ -3,6 +3,7 @@ const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 
 const ecpay_payment = require('ecpay_aio_nodejs');
+const ecpayment = require('../utils/ecpayment');
 
 //confirm Ec payment ReturnUrl
 exports.checkMac = catchAsync(async (req, res, next) => {
@@ -12,7 +13,7 @@ exports.checkMac = catchAsync(async (req, res, next) => {
   const data = { ...req.body };
   delete data.CheckMacValue; // 此段不驗證
   console.log('窮人檢查1');
-  const create = new ecpay_payment(options);
+  const create = new ecpay_payment(ecpayment.options);
   const checkValue = create.payment_client.helper.gen_chk_mac_value(data);
   console.log('窮人檢查2');
   console.log(
