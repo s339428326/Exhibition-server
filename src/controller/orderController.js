@@ -1,14 +1,16 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const ecpayment = require('../utils/ecpayment');
 const handlerFactory = require('./handlerFactory');
 const User = require('../model/userModel');
 const Order = require('../model/orderModel');
+
+const ecpay_payment = require('ecpay_aio_nodejs');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.getAllOrder = handlerFactory.getAll(Order);
 exports.getOrder = handlerFactory.getOne(Order);
-exports.createOrder = handlerFactory.create(Order);
 exports.deleteOrder = handlerFactory.deleteOne(Order);
 
 exports.getUserOrder = catchAsync(async (req, res, next) => {
@@ -67,5 +69,54 @@ exports.getUserOrder = catchAsync(async (req, res, next) => {
     status: '成功',
     result: orders.length,
     orders,
+  });
+});
+
+// Ec payment issue take new felid MerchantTradeNo
+exports.createOrder = catchAsync(async (req, res, next) => {
+  const {
+    TradeDesc,
+    TotalAmount,
+    ItemName,
+    userId,
+    name,
+    phone,
+    address,
+    total,
+    orderList,
+  } = req.body;
+
+  let missItems = [];
+
+  Object.entries(req.body).forEach(([key, value]) => {
+    if (!req.body[key]) {
+      missItems.push(key);
+    }
+  });
+
+  if (missItems.length > 0) {
+    return next(new AppError(`請檢查 ${missItems.toString()} 未正確填寫`, 404));
+  }
+
+  const base_param = ecpayment.genBaseParam(TotalAmount, TradeDesc, ItemName);
+
+  const create = new ecpay_payment(ecpayment.options);
+  const html = create.payment_client.aio_check_out_all(base_param);
+
+  //create order
+  const order = await Order.create({
+    userId,
+    name,
+    phone,
+    address,
+    total,
+    orderList,
+    MerchantTradeNo: base_param.MerchantTradeNo,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    html,
+    order,
   });
 });
