@@ -7,7 +7,7 @@ const ecpay_payment = require('ecpay_aio_nodejs');
 
 //confirm Ec payment ReturnUrl
 exports.checkMac = catchAsync(async (req, res, next) => {
-  console.log('req.body:', req.body, res);
+  console.log('req.body:', req.body);
 
   const { CheckMacValue, MerchantTradeNo } = req.body;
   const data = { ...req.body };
@@ -28,8 +28,9 @@ exports.checkMac = catchAsync(async (req, res, next) => {
     const order = await Order.findOne({ MerchantTradeNo: MerchantTradeNo });
     order.isPay = true;
     await order.save({ validateBeforeSave: true });
+    console.log('Find- Test Order:', order);
     res.send('1|OK');
   } else {
-    return;
+    return next(new AppError('訂單未成功付款, 請通知後台人員！', 404));
   }
 });
