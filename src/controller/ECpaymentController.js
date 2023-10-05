@@ -25,7 +25,7 @@ exports.checkMac = catchAsync(async (req, res, next) => {
 
   if (CheckMacValue === checkValue) {
     // 交易成功後，需要回傳 1|OK 給綠界
-    const order = await Order.find({ MerchantTradeNo: MerchantTradeNo });
+    const order = await Order.findOne({ MerchantTradeNo: MerchantTradeNo });
     order.isPay = true;
     await order.save({ validateBeforeSave: true });
     res.send('1|OK');
