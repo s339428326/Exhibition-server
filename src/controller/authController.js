@@ -9,7 +9,7 @@ const singToken = require('../utils/JWTHandler');
 
 const User = require('../model/userModel');
 
-const sendJwtToClient = (user, statusCode, req, res) => {
+exports.sendJwtToClient = (user, statusCode, req, res) => {
   const token = singToken(user.id);
 
   res.status(statusCode).json({

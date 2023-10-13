@@ -66,7 +66,7 @@ exports.getUserOrder = catchAsync(async (req, res, next) => {
   if (!orders) return next(new AppError('無此 用戶Id', 404));
 
   res.status(200).json({
-    status: '成功',
+    status: 'success',
     result: orders.length,
     orders,
   });
@@ -98,6 +98,18 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     return next(new AppError(`請檢查 ${missItems.toString()} 未正確填寫`, 404));
   }
 
+  //將重複票卷, 成獨立資料
+  let newCartList = [];
+  orderList.forEach((item) => {
+    if (item?.quantity > 1) {
+      for (let i = 0; i < item?.quantity; i++) {
+        newCartList.push(item);
+      }
+    } else {
+      newCartList.push(item);
+    }
+  });
+
   const base_param = ecpayment.genBaseParam(TotalAmount, TradeDesc, ItemName);
 
   const create = new ecpay_payment(ecpayment.options);
@@ -110,7 +122,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     phone,
     address,
     total,
-    orderList,
+    orderList: newCartList,
     MerchantTradeNo: base_param.MerchantTradeNo,
   });
 

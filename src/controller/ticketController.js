@@ -18,3 +18,17 @@ exports.getTicketData = catchAsync(async (req, res, next) => {
     ticket: ticket[0],
   });
 });
+
+exports.getUserTickets = catchAsync(async (req, res, next) => {
+  const tickets = await Order.find({ userId: req.params?.id });
+
+  const data = tickets
+    .map((item) => item.orderList)
+    .reduce((pre, next) => pre.concat(next));
+
+  res.status(200).json({
+    status: 'success',
+    result: data.length,
+    data,
+  });
+});

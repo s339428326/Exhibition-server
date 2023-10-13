@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
+  //[Feature] 進出場QR code 設計
   {
     userId: {
       type: mongoose.Schema.ObjectId,
