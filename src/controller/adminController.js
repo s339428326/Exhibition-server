@@ -2,10 +2,20 @@
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 const loginFeature = require('../utils/loginFeature');
-//
-const { sendJwtToClient } = require('../controller/authController');
-//
+const singToken = require('../utils/JWTHandler');
 const User = require('../model/userModel');
+
+const sendJwtToClient = (user, statusCode, req, res) => {
+  const token = singToken(user.id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
+};
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
