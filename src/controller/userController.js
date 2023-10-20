@@ -3,7 +3,7 @@ const AppError = require('../utils/AppError');
 const handlerFactory = require('./handlerFactory');
 const User = require('../model/userModel');
 
-//user profile
+//暫時不使用在後端上傳imgur
 exports.uploadImage = (keyName) =>
   catchAsync(async (req, res, next) => {
     const { authorization } = req.headers;

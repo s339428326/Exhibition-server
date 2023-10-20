@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const orderSchema = new mongoose.Schema(
   //[Feature] 進出場QR code 設計
@@ -16,7 +17,7 @@ const orderSchema = new mongoose.Schema(
     total: Number,
     isPay: {
       type: Boolean,
-      default: false,
+      default: true, //[FIX] 這裡應為false, 因為串接綠界測試服務有機率失敗, 先設置為true
     },
     orderList: [
       {
@@ -28,9 +29,15 @@ const orderSchema = new mongoose.Schema(
         ticketType: Object,
         price: Number,
         quantity: Number,
-        isAvailable: {
-          type: Boolean,
-          default: true,
+        qrcode: {
+          type: String,
+          // default: function () {
+          //   return jwt.sign({ ticketId: this._id }, process.env?.TICKET_SECRET);
+          // },
+        },
+        ticketStatu: {
+          Type: String,
+          enum: ['used', 'unused', 'using'], //已使用, 未使用, 使用中
         },
       },
     ],
