@@ -31,7 +31,6 @@ dist-ssr
 
 
 DateBase-Model.png
-package-lock.json
 *.env
 
 statusCodeTable.txt

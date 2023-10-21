@@ -10,7 +10,7 @@ const api = require('./src/routes/index');
 
 const app = express();
 
-//HTML template lng
+//HTML template lng for email
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'ejs');
 
@@ -24,8 +24,10 @@ app.use(cors());
 app.use(express.json({ limit: '2mb' })); //req 超過2mb 會停止回應
 app.use(express.urlencoded({ extended: false })); //解析外部回傳, extended:false禁止外部使用字串query DB
 
-//後端顯示頁面路由
-// app.use('/', view);
+//using react build static File
+app.use(express.static('public'));
+
+//api routes
 app.use('/api/v1', api);
 
 app.use(globalErrorHandler);
@@ -36,7 +38,7 @@ app.listen(port, () =>
   console.log(
     `NODE_ENV=${
       process.env.NODE_ENV
-    }\nApplication Start Port:${port}\n前端主機位置抓取：${
+    }\n後端登入位置:http://localhost:3000\nApplication Start Port:${port}\n前端主機位置抓取：${
       process.env.NODE_ENV === 'production'
         ? process.env?.FRONT_END_SERVER
         : process.env?.FRONT_END_LOCAL
