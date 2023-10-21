@@ -21,7 +21,7 @@ const Test = () => {
   return (
     <div>
       Test
-      <p>{fetchData}</p>
+      <p>{JSON.stringify(fetchData, null, 2)}</p>
     </div>
   );
 };

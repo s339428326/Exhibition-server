@@ -1,8 +1,7 @@
-# React + Vite
+展覽後端 API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+後端平台管理人員(Heroku)
+https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Vercel
+專案採用 React 打包作為靜態檔案, Vercel 平台 CSP 問題暫時無法正常顯示
