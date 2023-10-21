@@ -10,8 +10,8 @@ router.use(authController.protect);
 
 router.route('/').get(userController.getAllUsers);
 
-//update user avatar
-router.route('/uploadAvatar').post(userController.uploadImage('avatar'));
+//[FIX] 這次改在用戶端更新 imgur url to 後端
+// router.route('/uploadAvatar').post(userController.uploadImage('avatar'));
 
 router
   .route('/:id')

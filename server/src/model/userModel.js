@@ -41,9 +41,14 @@ const userSchema = new mongoose.Schema(
       default: 'user',
       required: true,
       enum: {
-        values: ['user', 'inspector', 'host', 'admin'], // 用戶, 檢票人員, 主辦人, 後台管理權限
+        // 用戶, 檢票人員, 主辦人, 後台管理權限
+        values: ['user', 'inspector', 'host', 'admin'],
         message: '出現錯誤權限用戶',
       },
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
     password: {
       type: String,

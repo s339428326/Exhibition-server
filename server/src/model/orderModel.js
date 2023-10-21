@@ -35,9 +35,10 @@ const orderSchema = new mongoose.Schema(
           //   return jwt.sign({ ticketId: this._id }, process.env?.TICKET_SECRET);
           // },
         },
-        ticketStatu: {
-          Type: String,
-          enum: ['used', 'unused', 'using'], //已使用, 未使用, 使用中
+        ticketState: {
+          type: String,
+          enum: ['unused', 'using', 'used'], //未使用, 使用中, 已使用
+          default: 'unused',
         },
       },
     ],

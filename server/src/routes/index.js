@@ -10,6 +10,7 @@ const authRouter = require('./authRoute');
 const ticketRouter = require('./ticketRoutes');
 const ecRouter = require('./ecRoutes');
 const adminRouter = require('./adminRoute');
+const hostRouter = require('./hostRoutes');
 
 router.use('/user', userRouter);
 router.use('/auth', authRouter);
@@ -19,5 +20,6 @@ router.use('/ticket', ticketRouter);
 router.use('/ec', ecRouter);
 router.use('/start', startRouter);
 router.use('/admin', adminRouter);
+router.use('/host', hostRouter);
 
 module.exports = router;
