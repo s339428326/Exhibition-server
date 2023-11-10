@@ -32,7 +32,9 @@ dist-ssr
 
 DateBase-Model.png
 *.env
-
+.env.production
 statusCodeTable.txt
 
 sendgrid.env
+
+test.js
