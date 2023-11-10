@@ -33,7 +33,6 @@ const useFetch = (method = 'get', dataUrl, backData = null) => {
         }
       } finally {
         if (isMounted) {
-          //測試Loading
           setIsLoading(false);
         }
       }

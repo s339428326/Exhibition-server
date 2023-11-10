@@ -116,18 +116,20 @@ exports.singUp = (model) =>
     });
 
     //[Feature] 針對公司員工, 添加額外mail Template
-    await new Email(
-      data,
-      `${
-        process.env?.[
-          `${
-            process.env.NODE_ENV === 'production'
-              ? 'FRONT_END_SERVER'
-              : 'FRONT_END_LOCAL'
-          }`
-        ]
-      }/Exhibition-front-end/`
-    ).sendWelcome();
+    if (model.modelName.toLowerCase() === 'user') {
+      await new Email(
+        data,
+        `${
+          process.env?.[
+            `${
+              process.env.NODE_ENV === 'production'
+                ? 'FRONT_END_SERVER'
+                : 'FRONT_END_LOCAL'
+            }`
+          ]
+        }/Exhibition-front-end/`
+      ).sendWelcome();
+    }
 
     //未被建立返回 客製 Error
     if (!data) return next(new AppError('建立賬戶失敗 ！', 403));

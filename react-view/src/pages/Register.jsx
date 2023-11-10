@@ -31,7 +31,7 @@ const Register = () => {
         expires: Date.now() + parseInt(import.meta.env.VITE_EXPIRE),
       });
       setAuthData({ ...data });
-      navigator('/databoard');
+      navigator('/exhibition/databoard');
     }
   }, [data]);
 
