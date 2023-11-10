@@ -1,13 +1,14 @@
+//驗證控制
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const Email = require('../utils/email.js');
 
-const AppError = require('../utils/AppError');
-const catchAsync = require('../utils/catchAsync');
-const loginFeature = require('../utils/loginFeature');
-const singToken = require('../utils/JWTHandler');
+const AppError = require('../utils/AppError.js');
+const catchAsync = require('../utils/catchAsync.js');
+const loginFeature = require('../utils/loginFeature.js');
+const singToken = require('../utils/JWTHandler.js');
 
-const User = require('../model/userModel');
+const User = require('../model/userModel.js');
 
 const sendJwtToClient = (user, statusCode, req, res) => {
   const token = singToken(user.id);
@@ -60,124 +61,143 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.authAndReturnUserData = catchAsync(async (req, res, next) => {
-  const { authorization } = req.headers;
-  let token = authorization?.startsWith('Bearer')
-    ? authorization?.split(' ')[1]
-    : authorization;
+exports.authAndReturnUserData = (model) =>
+  catchAsync(async (req, res, next) => {
+    const { authorization } = req.headers;
+    let token = authorization?.startsWith('Bearer')
+      ? authorization?.split(' ')[1]
+      : authorization;
 
-  if (!token) return next(new AppError('已登出', 403));
+    if (!token) return next(new AppError('已登出', 403));
 
-  //2.compare token is correct
-  const { id } = jwt.verify(token, process.env.JWT_SECRET);
+    //2.compare token is correct
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
-  const {
-    email,
-    avatar,
-    cover,
-    username,
-    role,
-    intro,
-    cart,
-    trackArtworkList,
-  } = await User.findById(id);
-  if (!email) return next(new AppError('請確認用戶是否存在', 404));
-
-  //3.res pass
-  res.status(200).json({
-    status: 'success',
-    user: {
+    const {
       email,
       avatar,
       cover,
       username,
       role,
-      id,
       intro,
       cart,
       trackArtworkList,
-    },
+    } = await model.findById(id);
+    if (!email) return next(new AppError('請確認用戶是否存在', 404));
+
+    //3.res pass
+    res.status(200).json({
+      status: 'success',
+      user: {
+        email,
+        avatar,
+        cover,
+        username,
+        role,
+        id,
+        intro,
+        cart,
+        trackArtworkList,
+      },
+    });
   });
-});
 
-exports.singUp = catchAsync(async (req, res, next) => {
-  const { username, email, password, confirmPassword } = req.body;
+exports.singUp = (model) =>
+  catchAsync(async (req, res, next) => {
+    const { email, password, confirmPassword } = req.body;
 
-  if (!email || !password || !confirmPassword || !username)
-    return next(new AppError('註冊失敗！ 請確認內容是否填寫正確'));
+    if (!email || !password || !confirmPassword)
+      return next(new AppError('註冊失敗！ 請確認內容是否填寫正確'));
 
-  const data = await User.create({
-    username,
-    email,
-    password,
-    confirmPassword,
+    const data = await model.create({
+      email,
+      password,
+      confirmPassword,
+    });
+
+    //[Feature] 針對公司員工, 添加額外mail Template
+    await new Email(
+      data,
+      `${
+        process.env?.[
+          `${
+            process.env.NODE_ENV === 'production'
+              ? 'FRONT_END_SERVER'
+              : 'FRONT_END_LOCAL'
+          }`
+        ]
+      }/Exhibition-front-end/`
+    ).sendWelcome();
+
+    //未被建立返回 客製 Error
+    if (!data) return next(new AppError('建立賬戶失敗 ！', 403));
+
+    sendJwtToClient(data, 200, req, res);
   });
 
-  await new Email(
-    data,
-    `${
-      process.env?.[
-        `${
-          process.env.NODE_ENV === 'production'
-            ? 'FRONT_END_SERVER'
-            : 'FRONT_END_LOCAL'
-        }`
-      ]
-    }/Exhibition-front-end/`
-  ).sendWelcome();
+exports.login = (roles, model) =>
+  catchAsync(async (req, res, next) => {
+    const { email, password } = req.body;
 
-  //未被建立返回 客製 Error
-  if (!data) return next(new AppError('建立賬戶失敗 ！', 403));
+    if (!email || !password)
+      return next(
+        new AppError('登入失敗！， 請從新確認 email 或 password'),
+        400
+      );
 
-  sendJwtToClient(data, 200, req, res);
-});
+    const user = await model
+      .findOne({ email })
+      .select('+password +loginCount +loginTime');
 
-exports.login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+    if (!user) return next(new AppError('請重新確認信箱與密碼'), 404);
 
-  if (!email || !password)
-    return next(new AppError('登入失敗！， 請從新確認 email 或 password'), 400);
-
-  const user = await User.findOne({ email }).select(
-    '+password +loginCount +loginTime'
-  );
-
-  if (!user) return next(new AppError('請重新確認信箱與密碼'), 404);
-
-  const isCorrectPassword = await user?.correctPassword(
-    password,
-    user.password
-  );
-
-  const isUserBlock = loginFeature.loginBlock(
-    user,
-    isCorrectPassword,
-    60 * 60 * 1000,
-    10
-  );
-  await user.save({ validateBeforeSave: false });
-
-  if (isUserBlock) {
-    return next(
-      new AppError(
-        `此帳戶嘗試多次登入請等待 ${loginFeature.printWattlingTime(
-          user,
-          60 * 60 * 1000
-        )} 分鐘`,
-        401
-      )
+    const isCorrectPassword = await user?.correctPassword(
+      password,
+      user.password
     );
-  }
 
-  if (user && isCorrectPassword) {
-    user.tryLoginCount = 0;
+    if (!roles.includes(user.role)) {
+      return next(
+        new AppError(
+          process.env.NODE_ENV === 'development'
+            ? '請確認帳戶權限'
+            : '請重新確認信箱與密碼',
+          400
+        )
+      );
+    }
+
+    const isUserBlock = loginFeature.loginBlock(
+      user,
+      isCorrectPassword,
+      60 * 60 * 1000,
+      10
+    );
     await user.save({ validateBeforeSave: false });
-    sendJwtToClient(user, 201, req, res);
-  } else {
-    await user.save({ validateBeforeSave: false });
-    return next(new AppError('登入失敗！， 請從新確認 email 或 password', 401));
-  }
-});
+
+    if (isUserBlock) {
+      return next(
+        new AppError(
+          `此帳戶嘗試多次登入請等待 ${loginFeature.printWattlingTime(
+            user,
+            60 * 60 * 1000
+          )} 分鐘`,
+          401
+        )
+      );
+    }
+
+    if (user && isCorrectPassword) {
+      user.tryLoginCount = 0;
+      await user.save({ validateBeforeSave: false });
+      sendJwtToClient(user, 201, req, res);
+    } else {
+      await user.save({ validateBeforeSave: false });
+      return next(
+        new AppError('登入失敗！， 請從新確認 email 或 password', 401)
+      );
+    }
+  });
 
 //用戶更新密碼
 exports.updatePassword = catchAsync(async (req, res, next) => {

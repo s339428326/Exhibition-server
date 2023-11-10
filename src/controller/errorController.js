@@ -1,3 +1,4 @@
+//錯誤控制
 const AppError = require('../utils/AppError');
 
 //開發模式(process.env.NODE_ENV = development)
@@ -61,20 +62,28 @@ module.exports = (err, req, res, next) => {
 
     //E11000 duplicate key error
     if (err.code === 11000) {
-      const errors = {};
+      //未使用Hook From res 使用物件形式
 
+      // const errors = {};
+      // const fieldsString = Object.keys(err.keyValue).forEach((keyname) => {
+      //   errors[keyname] = `${keyname}已被使用，請重新填寫！`;
+      // });
+
+      // return res.status(400).json({
+      //   status: 400,
+      //   errors,
+      // });
+
+      //重複錯誤使用res str
+      let message = '';
       const fieldsString = Object.keys(err.keyValue).forEach((keyname) => {
-        errors[keyname] = `${keyname}已被使用，請重新填寫！`;
+        message += `${keyname},`;
       });
+      message += '已被使用，請重新填寫！';
 
-      // return sendErrorProd(
-      //   new AppError(`${fieldsString}已被使用，請重新填寫！`, 400),
-      //   req,
-      //   res
-      // );
       return res.status(400).json({
         status: 400,
-        errors,
+        message,
       });
     }
 

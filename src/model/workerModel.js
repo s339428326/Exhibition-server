@@ -1,10 +1,9 @@
-//用戶
+//公司員工
+const mongoose = require('mongoose');
 const validator = require('validator');
 const useAuth = require('../preHook/useAuth');
 
-const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema(
+const workerSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -37,16 +36,17 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: 'user',
+      default: 'normal',
       required: true,
       enum: {
-        // 用戶, 檢票人員, 主辦人, 後台管理權限
-        values: ['user', 'inspector', 'host', 'admin'],
+        // 員工, 經理, 最高管理
+        values: ['normal', 'manger', 'admin'],
         message: '出現錯誤權限用戶',
       },
     },
     isActive: {
       type: Boolean,
+      select: false,
       default: true,
     },
     password: {
@@ -87,12 +87,6 @@ const userSchema = new mongoose.Schema(
     tryLoginTime: {
       type: Date,
     },
-    trackList: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Exhibition',
-      },
-    ],
   },
   {
     strict: true, //(重要)除了設計中的資料欄位，其他不會儲存到MongoDB中
@@ -101,9 +95,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-//auth pre hook
-useAuth(userSchema);
+useAuth(workerSchema);
+const Worker = mongoose.model('Worker', workerSchema);
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = Worker;

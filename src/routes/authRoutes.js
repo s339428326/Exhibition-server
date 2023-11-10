@@ -1,4 +1,5 @@
 const express = require('express');
+const User = require('../model/userModel');
 
 //controller
 const authController = require('../controller/authController');
@@ -21,11 +22,11 @@ router.post('/changeEmail', authController.changeEmail);
 router.post('/resetEmail/:token', authController.resetEmail);
 
 //authenticate
-router.route('/').get(authController.authAndReturnUserData);
+router.route('/').get(authController.authAndReturnUserData(User));
 
 //Login and Singup
-router.route('/singup').post(authController.singUp);
-router.route('/login').post(authController.login);
+router.route('/singup').post(authController.singUp(User));
+router.route('/login').post(authController.login(['user'], User));
 
 //protect Route(這裡以下都會需要登入後才可使用)
 router.use(authController.protect);
