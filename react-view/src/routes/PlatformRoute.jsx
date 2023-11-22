@@ -4,7 +4,7 @@ import { PlatformEmail, PlatformMessage } from '../pages/index';
 
 const PlatformRoute = () => (
   <Routes>
-    <Route element={<DefaultLayout />}>
+    <Route>
       {/* 平台信件 */}
       <Route index path="email" element={<PlatformEmail />} />
       {/* 平台通知 */}
