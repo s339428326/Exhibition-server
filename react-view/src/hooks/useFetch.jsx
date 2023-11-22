@@ -10,6 +10,8 @@ const useFetch = (method = 'get', dataUrl, backData = null) => {
   useEffect(() => {
     //用來確認當前元件的生命週期已經在Mounted階段
     let isMounted = true;
+    if (import.meta.env?.VITE_ENV === 'DEV')
+      console.time(`${dataUrl} 請求時間`);
     //用於取消當前請求 (token:標記清除請求, cancel:請除Fn)
     const { token, cancel } = axios.CancelToken.source();
 
@@ -39,11 +41,18 @@ const useFetch = (method = 'get', dataUrl, backData = null) => {
     })();
 
     const cleanUp = () => {
-      console.log(`useFetch(${dataUrl}) clean up`);
+      if (import.meta.env?.VITE_ENV === 'DEV') {
+        console.log(
+          `[${import.meta.env?.VITE_ENV}] useFetch(${dataUrl}) clean up `
+        );
+      }
+
       isMounted = false;
       cancel();
     };
 
+    if (import.meta.env?.VITE_ENV === 'DEV')
+      console.timeEnd(`${dataUrl} 請求時間`);
     return cleanUp;
   }, [backData, dataUrl, method]);
 

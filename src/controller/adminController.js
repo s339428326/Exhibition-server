@@ -1,12 +1,18 @@
 //最高權限資料控制
-const User = require('../model/userModel');
+const Worker = require('../model/workerModel');
+const Department = require('../model/departmentModel');
 
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 
 const handlerFactory = require('../controller/handlerFactory');
 
-exports.getAllUser = handlerFactory.getAll(User);
-exports.getUser = handlerFactory.getOne(User);
-exports.createUser = handlerFactory.create(User);
-exports.deleteUser = handlerFactory.deleteOne(User);
+//worker
+exports.getAllWorker = handlerFactory.getAll(Worker);
+exports.getWorker = handlerFactory.getOne(Worker);
+exports.createWorker = handlerFactory.create(Worker);
+exports.deleteWorker = handlerFactory.deleteOne(Worker);
+
+//department
+exports.createDepartment = handlerFactory.create(Department);
+exports.getAllDepartment = handlerFactory.getAll(Department);

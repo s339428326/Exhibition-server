@@ -29,7 +29,7 @@ router.route('/singup').post(authController.singUp(User));
 router.route('/login').post(authController.login(['user'], User));
 
 //protect Route(這裡以下都會需要登入後才可使用)
-router.use(authController.protect);
+router.use(authController.protect(User));
 
 router.route('/:id').put(authController.updatePassword);
 

@@ -95,8 +95,8 @@ const Login = () => {
               <span className="label-text">記住登入信箱</span>
             </label>
             {/*  */}
-            <Link to="/register" className="ml-auto btn btn-sm">
-              新員工註冊
+            <Link to="/forgetPassword" className="ml-auto btn btn-sm">
+              忘記密碼
             </Link>
           </div>
           <p className="text-sm text-red-500">{fetchError}</p>

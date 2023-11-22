@@ -1,4 +1,5 @@
 const express = require('express');
+const User = require('../model/userModel');
 
 //controller
 const authController = require('../controller/authController');
@@ -6,7 +7,7 @@ const userController = require('../controller/userController');
 
 const router = express.Router();
 
-router.use(authController.protect);
+router.use(authController.protect(User));
 
 router.route('/').get(userController.getAllUsers);
 

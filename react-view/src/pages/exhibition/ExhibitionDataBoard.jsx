@@ -1,10 +1,8 @@
+import useAuth from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from '../../context/AuthProvider';
-import { useOutletContext } from 'react-router-dom';
 
 const ExhibitionDataBoard = () => {
-  // const { authData, setAuthData } = useContext(AuthContext);
+  const { data } = useAuth();
   // const { isShow } = useOutletContext();
 
   return (
@@ -14,7 +12,7 @@ const ExhibitionDataBoard = () => {
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia esse
         ex unde ad exercitationem necessitatibus eum dicta minus explicabo
         maiores quod quia, facere laborum aperiam eaque fugiat obcaecati
-        laboriosam? Accusantium.{' '}
+        laboriosam? Accusantium.
       </div>
     </div>
   );

@@ -1,4 +1,7 @@
+import useAuth from '@/hooks/useAuth';
+
 const PartnerControlPanel = () => {
+  const { data } = useAuth();
   return (
     <div className="container mx-auto pt-12 px-4">
       <h1 className="font-medium text-xl mb-4">策展帳戶管理</h1>

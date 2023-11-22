@@ -12,7 +12,7 @@ import registerSchema from '@/validation/registerSchema';
 import cookie from 'js-cookie';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 
-const Register = () => {
+const ForgetPassword = () => {
   const navigator = useNavigate();
   const { authData, setAuthData } = useContext(AuthContext);
 
@@ -30,8 +30,8 @@ const Register = () => {
       cookie.set('token', data?.token, {
         expires: Date.now() + parseInt(import.meta.env.VITE_EXPIRE),
       });
-      setAuthData({ ...data });
-      navigator('/exhibition/databoard');
+      // setAuthData({ ...data });
+      // navigator('/exhibition/databoard');
     }
   }, [data]);
 
@@ -49,7 +49,9 @@ const Register = () => {
         <Link to="/" className="btn btn-circle absolute top-[8px] left-[8px]">
           <AiOutlineArrowLeft size={16} />
         </Link>
-        <h1 className="text-center text-xl font-medium mb-2s">員工註冊</h1>
+        <h1 className="text-center text-xl font-medium mb-2s">
+          忘記密碼(未完成)
+        </h1>
 
         <Input name={'email'} type="email" placeholder="工作信箱" />
         <Input
@@ -77,4 +79,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ForgetPassword;

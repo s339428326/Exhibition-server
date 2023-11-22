@@ -32,34 +32,37 @@ exports.restrictTo =
     next();
   };
 
-exports.protect = catchAsync(async (req, res, next) => {
-  const { authorization } = req.headers;
-  let token;
+//JWT 保護Router, 若需要鎖定 role 需要搭配 restrictTo 一起使用
+//router.use(authController.protect(Model),authController.restrictTo(['admin']))
+exports.protect = (model) =>
+  catchAsync(async (req, res, next) => {
+    const { authorization } = req.headers;
+    let token;
 
-  //Postman Test using
-  if (authorization && authorization.startsWith('Bearer')) {
-    token = authorization.split(' ')[1];
-    //for client
-  } else if (req.cookies?.jwt) {
-    token = req.cookies.jwt;
-  }
+    //Postman Test using
+    if (authorization && authorization.startsWith('Bearer')) {
+      token = authorization.split(' ')[1];
+      //for client
+    } else if (req.cookies?.jwt) {
+      token = req.cookies.jwt;
+    }
 
-  if (!process.env.JWT_SECRET) throw Error('請設定dotenv 文件');
+    if (!process.env.JWT_SECRET) throw Error('請設定dotenv 文件');
 
-  //1.確認token 是否存在
-  if (!token) return next(new AppError('您還未登入！', 401));
+    //1.確認token 是否存在
+    if (!token) return next(new AppError('您還未登入！', 401));
 
-  const { id, iat } = jwt.verify(token, process.env.JWT_SECRET);
+    const { id, iat } = jwt.verify(token, process.env.JWT_SECRET);
 
-  const user = await User.findById(id);
+    const user = await model.findById(id);
 
-  if (user?.changedPasswordAfter(iat))
-    return next(new AppError('密碼已更改請重新嘗試登入', 403));
+    if (user?.changedPasswordAfter(iat))
+      return next(new AppError('密碼已更改請重新嘗試登入', 403));
 
-  req.user = user;
+    req.user = user;
 
-  next();
-});
+    next();
+  });
 
 exports.authAndReturnUserData = (model) =>
   catchAsync(async (req, res, next) => {
@@ -149,9 +152,10 @@ exports.login = (roles, model) =>
 
     const user = await model
       .findOne({ email })
-      .select('+password +loginCount +loginTime');
+      .select('+password +loginCount +loginTime +isActive');
 
-    if (!user) return next(new AppError('請重新確認信箱與密碼'), 404);
+    if (!user || !user.isActive)
+      return next(new AppError('請重新確認信箱與密碼'), 404);
 
     const isCorrectPassword = await user?.correctPassword(
       password,

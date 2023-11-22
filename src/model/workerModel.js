@@ -8,11 +8,11 @@ const workerSchema = new mongoose.Schema(
     username: {
       type: String,
       trim: true,
-      minLength: [2, '暱稱請勿小於2字元'],
-      maxLength: [20, '暱稱請勿超過20字元'],
-      default: function () {
-        return this.email.split('@')[0];
-      },
+      require: true,
+    },
+    department: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Department',
     },
     email: {
       type: String,

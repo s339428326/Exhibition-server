@@ -6,6 +6,7 @@ const imgur = require('../utils/imgurHandler');
 //Get All
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
+    //若想要輸出 model 名稱可以使用 modelName
     const modelName = Model.modelName.toLowerCase();
 
     const features = new APIFeatures(Model.find(), req.query)

@@ -1,3 +1,5 @@
+import useAuth from '@/hooks/useAuth';
+
 import newAccountSchema from '../../validation/newAccountSchema';
 
 import Form from '../../components/Form';
@@ -8,7 +10,7 @@ import ModalBtn from '../../components/Modal/ModalBtn';
 const NewPartnerAccount = () => {
   // JSON to Excel
   // (https://docs.sheetjs.com/docs/demos/frontend/react/)
-
+  const { data } = useAuth();
   const onSubmit = (data) => console.log(data);
 
   return (

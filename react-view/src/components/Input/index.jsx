@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 const Input = ({
+  labelName,
   register,
   className,
   errors,
@@ -21,11 +22,14 @@ const Input = ({
       return 'password';
     });
   };
+  const randomId = crypto.randomUUID();
 
   return (
     <div className="relative">
-      <label htmlFor="">
+      <label htmlFor={randomId}>
+        {labelName && <p className="text-sm mb-1">{labelName}</p>}
         <input
+          id={randomId}
           className={`input input-bordered w-full 
         ${className}
         ${errors?.[name] && 'border-red-500'}`}
@@ -54,6 +58,7 @@ const Input = ({
 };
 
 Input.propTypes = {
+  labelName: propTypes.string,
   className: propTypes.string,
   register: propTypes.any,
   errors: propTypes.object,

@@ -9,7 +9,6 @@ const Modal = ({ children, modalId }) => {
             ✕
           </button>
         </form>
-        <h3 className="font-bold text-lg">展覽名稱</h3>
         {/* 內容 */}
         {children}
       </div>

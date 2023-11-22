@@ -1,3 +1,4 @@
+//[Bug] 確認在 NewPartner 元件中作用時否移除此檔案
 import * as yup from 'yup';
 
 //Login schema
