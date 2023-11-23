@@ -100,5 +100,14 @@ module.exports = (err, req, res, next) => {
 
     //[open]
     // sendErrorProd(err, req, res);
+  } else {
+    return sendErrorDev(
+      new AppError(
+        '請確認開發NODE ENV 環境變數是否正確或是出現不可預期錯誤發生',
+        403
+      ),
+      req,
+      res
+    );
   }
 };
