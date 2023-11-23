@@ -1,4 +1,6 @@
 class APIFeatures {
+  //ModelFindQuery
+  //reqQueryObj =>example url:../?startDate=0&endDate=0&minPrice=100
   constructor(ModelFindQuery, reqQueryObj) {
     this.ModelFindQuery = ModelFindQuery;
     this.reqQueryObj = reqQueryObj;

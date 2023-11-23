@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const useAuth = require('../preHook/useAuth');
+const cryptoMethods = require('../utils/cryptoMethods');
 
 const workerSchema = new mongoose.Schema(
   {
@@ -61,16 +62,6 @@ const workerSchema = new mongoose.Schema(
         '密碼包含至少一個字母和一個數字，長度至少為8位',
       ],
     },
-    confirmPassword: {
-      type: String,
-      required: [true, '請重新確認密碼'],
-      validate: [
-        function (value) {
-          return this.password === value;
-        },
-        '請確認輸入密碼是否一致',
-      ],
-    },
     intro: {
       type: String,
       maxLength: [160, '自我介紹請勿超過160個字元'],
@@ -96,6 +87,8 @@ const workerSchema = new mongoose.Schema(
 );
 
 useAuth(workerSchema);
+Object.assign(workerSchema.methods, cryptoMethods);
+
 const Worker = mongoose.model('Worker', workerSchema);
 
 module.exports = Worker;
