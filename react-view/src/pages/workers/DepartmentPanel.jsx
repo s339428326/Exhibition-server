@@ -1,11 +1,28 @@
 import ModalBtn from '@/components/Modal/ModalBtn';
+import useFetch from '@/hooks/useFetch';
+import { useEffect, Fragment } from 'react';
 
 const DepartmentPanel = ({
   setModalTitle,
   setModalContent,
   departmentList,
   setDepartmentList,
+  show,
+  setIsShow,
 }) => {
+  const { data, isLoading } = useFetch('get', '/api/v1/department');
+  console.log('[DepartmentPanel]', departmentList);
+  //
+  useEffect(() => {
+    //init get render data
+    if (data?.departmentData) {
+      setDepartmentList(() => {
+        console.log(data.departmentData);
+        return data.departmentData;
+      });
+    }
+  }, [isLoading]);
+
   //modalController
   const modalController = (title) => setModalTitle(title);
   return (
@@ -15,7 +32,10 @@ const DepartmentPanel = ({
         <ModalBtn
           className="btn btn-sm"
           modalId="worker-modal"
-          onClick={() => modalController('新增部門')}
+          onClick={() => {
+            modalController('新增部門');
+            setIsShow(true);
+          }}
         >
           + New
         </ModalBtn>
@@ -36,22 +56,26 @@ const DepartmentPanel = ({
         <div className="col text-center p-3 border-b"></div>
         {/* 標示head */}
         {/* Table Items  Example */}
-        <>
-          <div className="col text-center p-3 border-b">人資</div>
-          <div className="col text-center p-3 border-b">0/50</div>
-          <div className="col text-center p-3 border-b">
-            <ModalBtn
-              className={'btn btn-sm'}
-              onClick={() => {
-                modalController('部門詳細資訊');
-                setModalContent('1');
-              }}
-              modalId={'worker-modal'}
-            >
-              詳細資訊
-            </ModalBtn>
-          </div>
-        </>
+        {departmentList?.map((item) => (
+          <Fragment key={item?._id}>
+            <div className="col text-center p-3 border-b">{item?.name}</div>
+            <div className="col text-center p-3 border-b">
+              {item?.member?.length}/{item?.memberCount}
+            </div>
+            <div className="col text-center p-3 border-b">
+              <ModalBtn
+                className={'btn btn-sm'}
+                onClick={() => {
+                  modalController('部門詳細資訊');
+                  setModalContent(item?._id);
+                }}
+                modalId={'worker-modal'}
+              >
+                詳細資訊
+              </ModalBtn>
+            </div>
+          </Fragment>
+        ))}
       </div>
     </>
   );
