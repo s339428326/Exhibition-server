@@ -5,32 +5,45 @@ import Form from '@/components/Form';
 import Input from '@/components/Input';
 import Select from '@/components/Select';
 import { useForm } from 'react-hook-form';
-import { MdOutlineArrowBackIos } from 'react-icons/md';
-//[Feature] add New Worker validation
+//[Feature] 表單驗證未建立
 import { yupResolver } from '@hookform/resolvers/yup';
 
-const NewWorkerForm = ({ onSubmit, show }) => {
+const NewWorkerForm = ({ show, setIsShow }) => {
+  //get 部門全資料
   const { data, isLoading, fetchError } = useFetch(
     'get',
     '/api/v1/department/'
   );
 
-  const [page, setPage] = useState(0);
-
+  const [page, setPage] = useState(0); //頁數狀態
+  //[Feature] 表單驗證未建立
   const { handleSubmit, register, formState, watch } = useForm({
     // resolver: yupResolver(),
   });
 
+  //持續觀看department填寫value
   const watchDepartment = watch('department');
 
+  //表單傳送
+  const onSubmit = handleSubmit((data) => console.log(data));
+
+  //上一頁
+  const preStepHandler = () => {
+    if (page === 0) return;
+    setPage((pre) => --pre);
+  };
+  //下一頁
+  const nextStepHandler = () => {
+    setPage((pre) => ++pre);
+  };
+
   return (
-    <>
-      {page === 0 && (
+    <div className="overflow-hidden">
+      <div>
         <Form
           register={register}
           formState={formState}
-          className="flex flex-col gap-2"
-          onSubmit={handleSubmit(onSubmit)}
+          className={`flex flex-col gap-2`}
         >
           <Input
             labelName={'員工姓名'}
@@ -57,29 +70,24 @@ const NewWorkerForm = ({ onSubmit, show }) => {
                 ?.position
             }
           />
-          <button
-            type="submit"
-            onClick={() => setPage((pre) => pre + 1)}
-            className="btn w-full"
-          >
-            下一步
-          </button>
         </Form>
-      )}
-      {page === 1 && (
+        {/* page 2 */}
         <div>
-          <button className="btn btn-circle p-4" type="button">
-            <MdOutlineArrowBackIos />
-          </button>
           <p>申請帳戶詳細資料 + 隱蔽資訊</p>
           <p>帳戶密碼</p>
           <p>入職申請PDF 列印</p>
-          <button className="btn" type="button">
-            完成
-          </button>
         </div>
-      )}
-    </>
+      </div>
+
+      <div className="flex gap-2 justify-between">
+        <button className="btn" onClick={preStepHandler} disabled={page === 0}>
+          上一步
+        </button>
+        <button onClick={onSubmit} className="btn">
+          下一步
+        </button>
+      </div>
+    </div>
   );
 };
 
@@ -87,5 +95,5 @@ export default NewWorkerForm;
 
 NewWorkerForm.propTypes = {
   show: propTypes.bool,
-  onSubmit: propTypes.func,
+  setIsShow: propTypes.func,
 };
