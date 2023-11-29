@@ -6,7 +6,7 @@ const newDepartmentSchema = yup
   .object({
     name: yup
       .string()
-      .matches(/^[\u4E00-\u9FFF]+$/, '必須輸入中文') //ref to chatGPT regx
+      // .matches(/^[\u4E00-\u9FFF]+$/, '必須輸入中文') //ref to chatGPT regx(只能輸入繁體)
       .required('請勿為空'),
     memberCount: yup.number().positive().required('請勿為空'),
   })

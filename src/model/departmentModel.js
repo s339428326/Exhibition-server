@@ -6,7 +6,12 @@ const departmentSchema = new mongoose.Schema({
   name: {
     type: String,
     unique: true,
+    index: true,
     required: true,
+  },
+  position: {
+    type: [{ name: String, value: String }],
+    default: [{ name: '其他', value: 'other' }],
   },
   //員工數量
   memberCount: {
