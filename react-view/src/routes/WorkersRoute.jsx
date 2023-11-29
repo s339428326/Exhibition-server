@@ -5,6 +5,8 @@ import DepartmentPanel from '@/pages/workers/DepartmentPanel';
 import WorkerPanel from '@/pages/workers/WorkerPanel';
 
 const WorkersRoute = () => {
+  //modal show state
+  const [show, setIsShow] = useState(false);
   //change modal components
   const [modalTitle, setModalTitle] = useState('');
   //department modal content view data
@@ -21,7 +23,10 @@ const WorkersRoute = () => {
         element={
           <WorkersAccount
             departmentData={departmentData}
+            setDepartmentList={setDepartmentList}
             modalTitle={modalTitle}
+            show={show}
+            setIsShow={setIsShow}
           />
         }
       >
@@ -34,6 +39,8 @@ const WorkersRoute = () => {
               setModalContent={setDepartmentData}
               departmentList={departmentList}
               setDepartmentList={setDepartmentList}
+              show={show}
+              setIsShow={setIsShow}
             />
           }
         />
@@ -43,7 +50,9 @@ const WorkersRoute = () => {
             <WorkerPanel
               setModalTitle={setModalTitle}
               workerList={workerList}
-              setWorkerList={workerList}
+              setWorkerList={setWorkerList}
+              show={show}
+              setIsShow={setIsShow}
             />
           }
         />
