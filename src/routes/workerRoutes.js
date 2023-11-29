@@ -18,9 +18,15 @@ router.route('/auth').get(authController.authAndReturnUserData(Worker));
 
 router.use(authController.protect(Worker));
 
-//新增員工用戶
+//員工用戶 CRUD
 router
-  .route('/create')
+  .route('/')
+  .get(workerController.getAllWorker)
   .post(authController.restrictTo('admin'), workerController.createWorker);
+
+router
+  .route('/:id')
+  .get(workerController.getWorker)
+  .delete(authController.restrictTo('admin'), workerController.deleteWorker);
 
 module.exports = router;

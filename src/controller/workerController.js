@@ -5,6 +5,11 @@ const handlerFactory = require('./handlerFactory');
 
 const Worker = require('../model/workerModel');
 
+//worker
+exports.getAllWorker = handlerFactory.getAll(Worker);
+exports.getWorker = handlerFactory.getOne(Worker);
+exports.deleteWorker = handlerFactory.deleteOne(Worker);
+
 exports.createWorker = catchAsync(async (req, res, next) => {
   const { username, email, role, department } = req.body;
 
@@ -12,7 +17,12 @@ exports.createWorker = catchAsync(async (req, res, next) => {
     return next(new AppError('表單傳送失敗!, 請通知資訊室'));
 
   //username, email, role, department
-  const worker = await Worker.create({ username, email, role, department });
+  const worker = await Worker.create({
+    username,
+    email,
+    role,
+    department,
+  });
 
   res.status(200).json({
     status: 'success',
