@@ -1,11 +1,25 @@
 import propTypes from 'prop-types';
+import { useEffect } from 'react';
 
-const Modal = ({ children, modalId }) => {
+const Modal = ({ children, modalId, setIsShow }) => {
+  //addEventListener esc key
+  useEffect(() => {
+    const listEscKeyHandler = document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        setIsShow(false);
+      }
+    });
+    return () => document.removeEventListener('keydown', listEscKeyHandler);
+  }, []);
+
   return (
     <dialog id={modalId} className="modal">
       <div className="modal-box">
         <form method="dialog">
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          <button
+            onClick={() => setIsShow(false)}
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          >
             ✕
           </button>
         </form>
@@ -17,6 +31,7 @@ const Modal = ({ children, modalId }) => {
 };
 
 Modal.propTypes = {
+  setIsShow: propTypes.func,
   children: propTypes.node,
   modalId: propTypes.string,
 };
