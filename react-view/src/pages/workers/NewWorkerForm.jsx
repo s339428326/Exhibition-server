@@ -25,7 +25,7 @@ const NewWorkerForm = ({ onSubmit, show }) => {
 
   return (
     <>
-      {page === 1 && (
+      {page === 0 && (
         <Form
           register={register}
           formState={formState}
@@ -66,7 +66,7 @@ const NewWorkerForm = ({ onSubmit, show }) => {
           </button>
         </Form>
       )}
-      {page === 2 && (
+      {page === 1 && (
         <div>
           <button className="btn btn-circle p-4" type="button">
             <MdOutlineArrowBackIos />

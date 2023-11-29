@@ -2,34 +2,60 @@ import { useEffect, useState, useRef } from 'react';
 import Form from '@/components/Form';
 import Input from '@/components/Input';
 import useFetch from '@/hooks/useFetch';
-import newDepartmentSchema from '@/validation/NewDepartmentSchema';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import newDepartmentSchema from '@/validation/newDepartmentSchema';
 
-const NewDepartmentForm = () => {
+const NewDepartmentForm = ({ setDepartmentList }) => {
   //[Bug] React Hook over design
+  //[POST] useHook API
   const [postData, setPostData] = useState(null);
+  const [viewErrMsg, setViewErrorMsg] = useState(false);
   const formRef = useRef(null);
-  const { data, isLoading } = useFetch(
+  const { data, isLoading, fetchError } = useFetch(
     'post',
-    '/api/v1/admin/department',
+    '/api/v1/department',
     postData
   );
+  const { handleSubmit, register, formState, watch } = useForm({
+    resolver: yupResolver(newDepartmentSchema),
+  });
+  const resetHandler = () => {
+    setViewErrorMsg(false);
+    formRef.current.reset();
+    document.getElementById('worker-modal').close();
+  };
 
+  //Reset Form value
   useEffect(() => {
     if (data) {
-      formRef.current.reset();
-      document.getElementById('worker-modal').close();
+      resetHandler();
     }
   }, [isLoading]);
 
-  const onSubmit = (submitData) => {
+  //rerender data
+  useEffect(() => {
+    if (!postData || fetchError) return;
+    if (data?.data) setDepartmentList((pre) => [...pre, data.data]);
+    setPostData(null);
+  }, [data]);
+
+  const onSubmit = async (submitData) => {
     setPostData(submitData);
+    if (fetchError) {
+      setViewErrorMsg(true);
+      setTimeout(() => {
+        setViewErrorMsg(false);
+      }, 2500);
+    }
   };
 
   return (
     <Form
       ref={formRef}
-      onSubmit={onSubmit}
-      schema={newDepartmentSchema}
+      onSubmit={handleSubmit(onSubmit)}
+      register={register}
+      formState={formState}
       className="flex flex-col gap-4"
     >
       <Input
@@ -43,6 +69,7 @@ const NewDepartmentForm = () => {
         name={'memberCount'}
         placeholder={'請輸入部門人數'}
       />
+      <p className="text-red-500">{viewErrMsg && '請注意部門名稱是否錯誤'}</p>
       <button className="btn ">
         {isLoading ? (
           <span className="loading loading-dots loading-sm"></span>
