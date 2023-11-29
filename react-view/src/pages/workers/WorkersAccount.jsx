@@ -6,7 +6,13 @@ import NewWorkerForm from './NewWorkerForm';
 import DepartmentModal from './DepartmentModal';
 import WorkerModal from './WorkerModal';
 
-const WorkersAccount = ({ modalTitle, departmentData }) => {
+const WorkersAccount = ({
+  modalTitle,
+  departmentData,
+  setDepartmentList,
+  show,
+  setIsShow,
+}) => {
   useAuth();
 
   //新增員工表單傳送
@@ -42,21 +48,25 @@ const WorkersAccount = ({ modalTitle, departmentData }) => {
       </div>
 
       {/* Modal */}
-      <Modal modalId="worker-modal">
+      <Modal modalId="worker-modal" setIsShow={setIsShow}>
         <h2 className="text-xl font-medium mb-4">{modalTitle}</h2>
         {/*  新增員工 Modal  content*/}
         {modalTitle === '新增員工' && (
-          <NewWorkerForm onSubmit={newWorkerSubmit} />
+          <NewWorkerForm
+            onSubmit={newWorkerSubmit}
+            show={show}
+            setIsShow={setIsShow}
+          />
         )}
         {/*  員工詳細資訊  */}
         {modalTitle === '員工資料' && <WorkerModal />}
         {/* 新增部門 Modal  content */}
         {modalTitle === '新增部門' && (
-          <NewDepartmentForm onSubmit={departmentSubmit} />
+          <NewDepartmentForm setDepartmentList={setDepartmentList} />
         )}
         {/* 查看部門詳細資訊 */}
         {modalTitle === '部門詳細資訊' && (
-          <DepartmentModal data={departmentData} />
+          <DepartmentModal id={departmentData} />
         )}
       </Modal>
       {/* outlet component:DepartmentPanel, WorkerPanel  */}

@@ -1,6 +1,12 @@
 import ModalBtn from '@/components/Modal/ModalBtn';
 
-const WorkerPanel = ({ setModalTitle, workerList, setWorkerList }) => {
+const WorkerPanel = ({
+  setModalTitle,
+  workerList,
+  setWorkerList,
+  show,
+  setIsShow,
+}) => {
   return (
     <>
       <div className="flex gap-2 items-center mb-4">
@@ -9,7 +15,10 @@ const WorkerPanel = ({ setModalTitle, workerList, setWorkerList }) => {
         <ModalBtn
           className="btn btn-sm"
           modalId="worker-modal"
-          onClick={() => setModalTitle('新增員工')}
+          onClick={() => {
+            setModalTitle('新增員工');
+            setIsShow(true);
+          }}
         >
           + New
         </ModalBtn>
