@@ -60,7 +60,7 @@ const Select = ({
 
 export default Select;
 
-Select.PropTypes = {
+Select.propTypes = {
   labelName: propTypes.string,
   className: propTypes.string,
   register: propTypes.func,

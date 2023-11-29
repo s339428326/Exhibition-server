@@ -13,7 +13,7 @@ const Modal = ({ children, modalId, setIsShow }) => {
   }, []);
 
   return (
-    <dialog id={modalId} className="modal">
+    <dialog id={modalId} className="modal overflow-hidden">
       <div className="modal-box">
         <form method="dialog">
           <button

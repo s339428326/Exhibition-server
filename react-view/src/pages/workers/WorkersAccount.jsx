@@ -1,3 +1,4 @@
+import propTypes from 'prop-types';
 import useAuth from '@/hooks/useAuth';
 import { NavLink, Outlet } from 'react-router-dom';
 import Modal from '@/components/Modal/Modal';
@@ -15,15 +16,15 @@ const WorkersAccount = ({
 }) => {
   useAuth();
 
-  //新增員工表單傳送
-  const newWorkerSubmit = (data) => {
-    console.log('newWorkerSubmit', data);
-  };
+  //新增員工表單傳送(目前該子元件控制)
+  // const newWorkerSubmit = (data) => {
+  //   console.log('newWorkerSubmit', data);
+  // };
 
-  //新增部門表單傳送
-  const departmentSubmit = (data) => {
-    console.log('departmentSubmit', data);
-  };
+  //新增部門表單傳送(目前該子元件控制)
+  // const departmentSubmit = (data) => {
+  //   console.log('departmentSubmit', data);
+  // };
 
   return (
     <div className="container mx-auto px-4 pt-12">
@@ -52,11 +53,7 @@ const WorkersAccount = ({
         <h2 className="text-xl font-medium mb-4">{modalTitle}</h2>
         {/*  新增員工 Modal  content*/}
         {modalTitle === '新增員工' && (
-          <NewWorkerForm
-            onSubmit={newWorkerSubmit}
-            show={show}
-            setIsShow={setIsShow}
-          />
+          <NewWorkerForm show={show} setIsShow={setIsShow} />
         )}
         {/*  員工詳細資訊  */}
         {modalTitle === '員工資料' && <WorkerModal />}
@@ -76,3 +73,11 @@ const WorkersAccount = ({
 };
 
 export default WorkersAccount;
+
+WorkersAccount.propTypes = {
+  modalTitle: propTypes.string,
+  departmentData: propTypes.array,
+  setDepartmentList: propTypes.func,
+  show: propTypes.bool,
+  setIsShow: propTypes.func,
+};
