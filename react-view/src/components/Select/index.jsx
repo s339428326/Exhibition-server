@@ -1,4 +1,5 @@
 import propTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 
 /**
  * @param {*} data
@@ -23,8 +24,11 @@ const Select = ({
   data,
   ...rest
 }) => {
-  if (!data)
-    return console.error('[Component]<Select/> 請按照註釋填入data資料');
+  const [list, setList] = useState(data ? data : []);
+
+  useEffect(() => {
+    setList(data);
+  }, [data]);
 
   const randomId = crypto.randomUUID();
 
@@ -41,12 +45,11 @@ const Select = ({
         {...register(name)}
         {...rest}
       >
-        {data.map((it, index) => (
-          <option
-            key={it?.name}
-            value={index === 0 ? defaultValue : it?.value}
-            disabled={index === 0}
-          >
+        <option value="" disabled>
+          請選擇項目
+        </option>
+        {list?.map((it, index) => (
+          <option key={it?.name} value={it?.value}>
             {it?.name}
           </option>
         ))}
@@ -64,4 +67,5 @@ Select.PropTypes = {
   errors: propTypes.object,
   defaultValue: propTypes.string,
   name: propTypes.string,
+  data: propTypes.array,
 };
