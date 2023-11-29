@@ -6,15 +6,23 @@ const cryptoMethods = require('../utils/cryptoMethods');
 
 const workerSchema = new mongoose.Schema(
   {
+    //用戶名稱
     username: {
       type: String,
       trim: true,
       require: true,
     },
+    //部門名稱
     department: {
       type: mongoose.Schema.ObjectId,
       ref: 'Department',
     },
+    //職稱
+    position: {
+      type: String,
+      default: '未設置',
+    },
+    //信箱
     email: {
       type: String,
       unique: true,
@@ -22,6 +30,7 @@ const workerSchema = new mongoose.Schema(
       validate: [validator.isEmail, '請輸入有效信箱格式'],
       required: [true, '使用者必須包含email'],
     },
+    //頭像
     avatar: {
       imageUrl: {
         type: String,
@@ -32,9 +41,11 @@ const workerSchema = new mongoose.Schema(
         default: '',
       },
     },
+    //公司用電話
     phone: {
       type: String,
     },
+    //網站管理權限
     role: {
       type: String,
       default: 'normal',
@@ -45,11 +56,13 @@ const workerSchema = new mongoose.Schema(
         message: '出現錯誤權限用戶',
       },
     },
+    //帳戶是否凍結
     isActive: {
       type: Boolean,
       select: false,
       default: true,
     },
+    //
     password: {
       type: String,
       minLength: [8, '密碼請勿低於8個字元'],
