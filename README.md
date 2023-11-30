@@ -46,3 +46,11 @@ ECpaymentController(綠界第三方金流 API)
 exhibitionController(展覽)
 errorController(全局 錯誤訊息)
 handlerController(CRUD 生成工廠)(術語待檢查)
+
+### PDF 若無法正確使用請確認瀏覽器版本
+
+- IE (X)不支援
+- Chrome ≥92
+- Edge ≥92
+- Safari ≥15.4
+- Firefox ≥90
