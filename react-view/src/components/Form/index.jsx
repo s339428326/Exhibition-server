@@ -4,10 +4,9 @@ import propTypes from 'prop-types';
 
 const Form = forwardRef(
   ({ children, onSubmit, register, formState, ...rest }, ref) => {
-    //Tips.1 使用React Hook Form 的 useFrom Hook
-    //Tips.2 針對useForm 得 解構出 方法
-    //Tips.3 使用React預設 props.children 取得 子元件, 並使用React.Children.map 建立createElement
-    //Tips.4 React.Children
+    //Tips.1 針對useForm 得 解構出 方法
+    //Tips.2 使用React預設 props.children 取得 子元件, 並使用React.Children.map 建立createElement
+    //Tips.3 React.Children
     //(參數1:當前要遍歷得props.children, 參數2:(參數:1陣列元素, 參數:2陣列位置))
 
     //[Dev] 觀看children type => Array
@@ -32,6 +31,7 @@ const Form = forwardRef(
 Form.propTypes = {
   onSubmit: propTypes.func,
   defaultValues: propTypes.object,
+  formState: propTypes.object,
   schema: propTypes.object,
   children: propTypes.node,
   useForm: propTypes.func,
