@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Fragment } from 'react';
 import { useNavigate, Link, NavLink, useLocation } from 'react-router-dom';
 
 import cookie from 'js-cookie';
@@ -121,12 +121,17 @@ const LinkList = ({
 };
 const SideBar = () => {
   const navigate = useNavigate();
+
   const { pathname } = useLocation();
   const [isShow, setIsShow] = useState(true);
   const [isAllOpen, setIsAllOpen] = useState(true);
+  const sideBarRef = useRef();
 
   const showHandler = () => {
-    setIsShow(!isShow);
+    setIsShow((pre) => {
+      console.log('[showHandler]', pre, `to${!pre}`);
+      return !pre;
+    });
     setIsAllOpen(false);
   };
 
@@ -140,10 +145,26 @@ const SideBar = () => {
       }
     };
 
+    const handleMouseControl = (e) => {
+      if (e.target?.id === 'btn-show') return;
+      if (!sideBarRef.current.contains(e.target)) {
+        console.log('in');
+        console.log('[handleMouseControl]', isShow, 'toFalse');
+        setIsAllOpen(false);
+        setIsShow(false);
+        return;
+      }
+      setIsShow(true);
+    };
+
+    window.addEventListener('click', handleMouseControl);
     window.addEventListener('resize', handleWindowResize);
     handleWindowResize(); //重新整理也需要, 判定一次
 
-    return () => window.removeEventListener('resize', handleWindowResize);
+    return () => {
+      window.removeEventListener('click', handleMouseControl);
+      window.removeEventListener('resize', handleWindowResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -174,6 +195,7 @@ const SideBar = () => {
       ></div>
       {/* 側邊欄 */}
       <aside
+        ref={sideBarRef}
         className={`sm:static flex sm:flex-col sm:h-screen transition-all shadow
       ${
         isShow
@@ -184,14 +206,16 @@ const SideBar = () => {
       >
         {/* 顯示 */}
         <button
+          id="btn-show"
           className={`btn btn-square ${isShow ? 'sm:ml-auto' : 'sm:mx-auto'}`}
           type="button"
           onClick={showHandler}
         >
           {isShow ? (
-            <MdOutlineKeyboardArrowLeft size={24} />
+            // <MdOutlineKeyboardArrowLeft size={24} />
+            'X'
           ) : (
-            <MdMenu size={24} />
+            <MdMenu className="pointer-events-none" size={24} />
           )}
         </button>
 
