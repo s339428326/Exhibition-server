@@ -28,14 +28,26 @@ https://evening-hollows-08215-2bb8e1b9252d.herokuapp.com/
 1. 展覽主辦帳戶 CRUD
 2. 個展覽販賣及營收資料統計
 3. 展覽管理(RUD)
+4. 公司內部員工帳戶管理
+   - 圖片
+   - 地址
+   - 展覽時間
+   - 展覽標題
+   - 展覽介紹
 
 ### API 路由(router)
 
-partner(合作夥伴)
+admin(管理者) 使用 auth protect Controller 替代
 auth(憑證, 登入安全相關)
-company(公司)
+department(部門)
 ec(綠界第三方金流 API)
 exhibition(展覽)
+host(展覽主辦方)
+order(訂單)
+partner(合作夥伴)
+start(喚醒部署伺服器)
+exhibition(展覽)
+worker(公司內部員工)
 
 ### API controller
 
@@ -45,12 +57,9 @@ workerController(公司)
 ECpaymentController(綠界第三方金流 API)
 exhibitionController(展覽)
 errorController(全局 錯誤訊息)
-handlerController(CRUD 生成工廠)(術語待檢查)
+handlerController(CRUD 生成工廠)
 
-### PDF 若無法正確使用請確認瀏覽器版本
+### Email 寄送
 
-- IE (X)不支援
-- Chrome ≥92
-- Edge ≥92
-- Safari ≥15.4
-- Firefox ≥90
+npm run dev => Email 使用 mailtrap
+npm run prod => Email 使用 sendGrid
