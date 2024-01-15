@@ -340,7 +340,8 @@ const EmailView = ({
   setIsShowEmail,
 }) => {
   const { authData } = useContext(AuthContext);
-  const { handlePost: handleSendEmail } = usePost('patch');
+  const { handlePost: handleSendEmail, isLoading: sendEmailLoad } =
+    usePost('patch');
 
   const sendEmailHandler = async () => {
     const res = await handleSendEmail(
@@ -350,12 +351,12 @@ const EmailView = ({
       }
     );
     //find index
-    const index = emailList.platformemailData.findIndex(
-      (it) => it?.id === currentEmail?._id
-    );
+    const index = emailList.findIndex((it) => it?.id === currentEmail?._id);
+    console.log(index);
     setEmailList((pre) => {
-      const newList = pre;
+      const newList = [...pre];
       newList.splice(index, 1, res.data.data);
+      console.log(newList, res.data.data);
       return newList;
     });
   };
@@ -394,7 +395,11 @@ const EmailView = ({
                 onClick={sendEmailHandler}
                 className="btn btn-sm"
                 type="button"
+                disabled={sendEmailLoad}
               >
+                {sendEmailLoad && (
+                  <span className="loading loading-spinner loading-sm"></span>
+                )}
                 審核
               </button>
             )}
