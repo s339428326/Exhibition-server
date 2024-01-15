@@ -6,7 +6,7 @@ const useAuth = require('../preHook/useAuth');
 const partnerSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
+    default: '未設置聯絡人名稱',
   },
   role: {
     type: String,
@@ -25,6 +25,10 @@ const partnerSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    email: {
+      type: String,
+      required: true,
+    },
     //插入展覽Data
     exhibition: [
       {
@@ -36,10 +40,6 @@ const partnerSchema = new mongoose.Schema({
     isActive: {
       type: Boolean,
       default: false,
-    },
-    email: {
-      type: String,
-      required: true,
     },
   },
   password: {

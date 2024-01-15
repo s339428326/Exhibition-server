@@ -21,4 +21,16 @@ router
 
 router.route('/:id').get(departmentController.getDepartment);
 
+// New department position
+// check admin worker controller
+// authController.restrictTo('admin', 'manger'),
+router
+  .route('/position/:id')
+  .post(departmentController.createDepartmentPosition)
+  .patch(departmentController.patchDepartmentPosition);
+
+router
+  .route('/position/del/:id')
+  .patch(departmentController.deleteDepartmentPosition);
+
 module.exports = router;

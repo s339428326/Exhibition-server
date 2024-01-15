@@ -10,7 +10,13 @@ const workerSchema = new mongoose.Schema(
     username: {
       type: String,
       trim: true,
-      require: true,
+      default: function () {
+        return this.email.split('@')[0];
+      },
+    },
+    //員工真實名稱
+    name: {
+      type: String,
     },
     //部門名稱
     department: {
@@ -26,6 +32,7 @@ const workerSchema = new mongoose.Schema(
     email: {
       type: String,
       unique: true,
+      index: true,
       trim: true,
       validate: [validator.isEmail, '請輸入有效信箱格式'],
       required: [true, '使用者必須包含email'],
@@ -59,7 +66,6 @@ const workerSchema = new mongoose.Schema(
     //帳戶是否凍結
     isActive: {
       type: Boolean,
-      select: false,
       default: true,
     },
     //
@@ -99,7 +105,13 @@ const workerSchema = new mongoose.Schema(
   }
 );
 
+//mongoose 嵌入資料速度太慢
+// workerSchema.pre(/^find/, function () {
+//   this.populate('department');
+// });
+
 useAuth(workerSchema);
+
 Object.assign(workerSchema.methods, cryptoMethods);
 
 const Worker = mongoose.model('Worker', workerSchema);

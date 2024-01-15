@@ -76,6 +76,16 @@ exports.authAndReturnUserData = (model) =>
     //2.compare token is correct
     const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
+    //check worker model
+    const modelName = model.modelName.toLowerCase();
+    if (modelName === 'worker') {
+      const worker = await model.findById(id);
+      return res.status(200).json({
+        status: 'success',
+        user: worker,
+      });
+    }
+
     const {
       email,
       avatar,

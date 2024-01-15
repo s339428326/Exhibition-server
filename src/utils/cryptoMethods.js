@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
 const cryptoMethods = {
+  //比對 bcrypt 加密密碼 是否等與 填入密碼
   correctPassword: async function (candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
   },

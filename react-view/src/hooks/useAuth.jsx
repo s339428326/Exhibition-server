@@ -20,7 +20,7 @@ const useAuth = () => {
     }
 
     if (data) {
-      setAuthData({ authData, ...data.user });
+      setAuthData({ ...data.user });
     }
   }, [isLoading]);
 

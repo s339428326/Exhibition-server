@@ -1,12 +1,19 @@
 const generatePassword = (len) => {
-  const str =
-    'abcdefghijklmnopqrstuvwxyz' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + '0123456789';
+  const eng = 'abcdefghijklmnopqrstuvwxyz' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const num = '0123456789';
   let password = '';
   for (let i = 0; i < len; i++) {
+    let str = eng + num;
+    if (i === 0) str = eng;
+    if (i === 1) str = num;
     const random = Math.floor(Math.random() * str.length);
     password += str[random];
   }
   return password;
 };
+
+const res = generatePassword(8);
+
+console.log(res);
 
 module.exports = generatePassword;

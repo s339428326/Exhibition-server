@@ -35,10 +35,10 @@ instance.interceptors.response.use(
           break;
         case `${status}`.startsWith('5'):
           // go to 500 page
-          console.error('heroku程式發生問題', error.response);
+          console.error('[部署伺服器]程式發生問題', error.response);
           break;
         default:
-          console.log('heroku Api 發生錯誤', error.response);
+          console.log('API 發生錯誤', error.response);
           break;
       }
     }

@@ -1,17 +1,23 @@
-import { useEffect, useState, useRef, Fragment } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate, Link, NavLink, useLocation } from 'react-router-dom';
 
 import cookie from 'js-cookie';
 import propTypes from 'prop-types';
+
 //icons
 import {
   MdMenu,
   MdOutlineKeyboardArrowLeft,
+  MdWeb,
   MdLogout,
   MdSwitchAccount,
 } from 'react-icons/md';
 
-import { BsCardChecklist } from 'react-icons/bs';
+import {
+  BsCardChecklist,
+  BsBuildingFillAdd,
+  BsPersonVcardFill,
+} from 'react-icons/bs';
 import { AiOutlineBarChart, AiFillFund } from 'react-icons/ai';
 import { PiTicketDuotone } from 'react-icons/pi';
 import { FaUserCheck } from 'react-icons/fa';
@@ -38,6 +44,7 @@ const sideBarLinkList = [
   {
     title: '合作夥伴',
     path: '/partner',
+    icon: <BsBuildingFillAdd size={24} />,
     children: [
       {
         path: '/account',
@@ -54,6 +61,7 @@ const sideBarLinkList = [
   {
     title: '平台',
     path: '/platform',
+    icon: <MdWeb size={24} />,
     children: [
       {
         path: '/email',
@@ -70,17 +78,18 @@ const sideBarLinkList = [
   {
     title: '公司員工',
     path: '/workers',
+    icon: <BsPersonVcardFill size={24} />,
     children: [
       {
         path: '/account/department',
         icon: null,
         title: '員工帳戶管理',
       },
-      {
-        path: '/apply',
-        icon: null,
-        title: '新增員工帳戶',
-      },
+      // {
+      //   path: '/apply',
+      //   icon: null,
+      //   title: '新增員工帳戶',
+      // },
     ],
   },
 ];
@@ -121,8 +130,8 @@ const LinkList = ({
 };
 const SideBar = () => {
   const navigate = useNavigate();
-
   const { pathname } = useLocation();
+
   const [isShow, setIsShow] = useState(true);
   const [isAllOpen, setIsAllOpen] = useState(true);
   const sideBarRef = useRef();
@@ -148,8 +157,6 @@ const SideBar = () => {
     const handleMouseControl = (e) => {
       if (e.target?.id === 'btn-show') return;
       if (!sideBarRef.current.contains(e.target)) {
-        console.log('in');
-        console.log('[handleMouseControl]', isShow, 'toFalse');
         setIsAllOpen(false);
         setIsShow(false);
         return;
@@ -190,16 +197,16 @@ const SideBar = () => {
       <div
         className={`${
           isShow &&
-          ' absolute backdrop-blur-xl top-0 right-0 left-0 bottom-0 z-[1]  md:hidden'
+          ' absolute backdrop-blur-xl top-0 right-0 left-0 bottom-0 z-20  md:hidden'
         }`}
       ></div>
       {/* 側邊欄 */}
       <aside
         ref={sideBarRef}
-        className={`sm:static flex sm:flex-col sm:h-screen transition-all shadow
+        className={`sm:static flex sm:flex-col sm:h-screen transition-all shadow z-50 bg-white
       ${
         isShow
-          ? 'absolute flex flex-col gap-4 h-screen sm:border-r z-10 w-full md:w-1/4 bottom-0 right-0 left-0 top-0 p-4 sm:p-0'
+          ? 'absolute flex flex-col gap-4 h-screen sm:border-r z-30 w-full md:w-1/4 bottom-0 right-0 left-0 top-0 p-4 sm:p-0'
           : 'absolute bottom-0 right-0 left-0 border sm:w-16 sm:border-r'
       }
       `}

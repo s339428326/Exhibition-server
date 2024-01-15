@@ -10,8 +10,16 @@ const departmentSchema = new mongoose.Schema({
     required: true,
   },
   position: {
-    type: [{ name: String, value: String }],
-    default: [{ name: '其他', value: 'other' }],
+    type: [
+      {
+        name: { type: String, unique: true },
+        value: { type: String, unique: true },
+      },
+    ],
+    default: [
+      { name: '部門經理', value: 'manger' },
+      { name: '其他', value: 'other' },
+    ],
   },
   //員工數量
   memberCount: {
@@ -31,6 +39,10 @@ const departmentSchema = new mongoose.Schema({
   },
 });
 
-const Department = mongoose.model('Department', departmentSchema);
+const Department = mongoose.model(
+  'Department',
+  departmentSchema,
+  'departments'
+);
 
 module.exports = Department;

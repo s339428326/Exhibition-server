@@ -14,9 +14,10 @@ export default defineConfig({
   server: {
     // 啟動 server 時預設開啟的頁面
     // open: '/',
-    https: true,
-    host: '192.168.0.12', //RWD 同網域下可以連線設定
-    port: 5174,
+    //RWD 同網域下可以連線設定
+    // https: true,
+    // host: '192.168.0.12',
+    // port: 5174,
   },
   build: {
     outDir: '../public',

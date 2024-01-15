@@ -1,6 +1,7 @@
 //React
 import { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { AuthContext } from '@/context/AuthProvider';
 //components
 import Form from '@/components/Form';
@@ -15,6 +16,12 @@ import { AiOutlineArrowLeft } from 'react-icons/ai';
 const ForgetPassword = () => {
   const navigator = useNavigate();
   const { authData, setAuthData } = useContext(AuthContext);
+  const { handleSubmit, register, formState } = useForm({
+    // resolver: yupResolver(loginSchema),
+    // defaultValues: {
+    //   email: localStorage.getItem('email'),
+    // },
+  });
 
   const [formData, setFormData] = useState(null);
   const { data, fetchError, isLoading } = useFetch(
@@ -43,7 +50,9 @@ const ForgetPassword = () => {
     <main className="container mx-auto px-4 flex w-screen h-screen justify-center items-center">
       <Form
         onSubmit={onSubmit}
-        schema={registerSchema}
+        // schema={registerSchema}
+        register={register}
+        formState={formState}
         className="flex flex-col w-full md:w-1/2 gap-5 px-4 border rounded-lg p-6 shadow-md relative"
       >
         <Link to="/" className="btn btn-circle absolute top-[8px] left-[8px]">

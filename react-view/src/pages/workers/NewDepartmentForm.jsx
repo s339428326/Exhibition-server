@@ -1,54 +1,47 @@
-import { useEffect, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
+import { ReducerContext } from '@/context/ReducerProvider';
+
 import Form from '@/components/Form';
 import Input from '@/components/Input';
-import useFetch from '@/hooks/useFetch';
+
+import usePost from '@/hooks/usePost';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import newDepartmentSchema from '@/validation/newDepartmentSchema';
+import { departmentAction } from '@/reducers/departmentReducer';
 
-const NewDepartmentForm = ({ setDepartmentList }) => {
-  //[Bug] React Hook over design
-  //[POST] useHook API
-  const [postData, setPostData] = useState(null);
+const NewDepartmentForm = () => {
+  const [state, dispatch] = useContext(ReducerContext);
   const [viewErrMsg, setViewErrorMsg] = useState(false);
   const formRef = useRef(null);
-  const { data, isLoading, fetchError } = useFetch(
-    'post',
-    '/api/v1/department',
-    postData
-  );
-  const { handleSubmit, register, formState, watch } = useForm({
+
+  const {
+    handlePost: handleNewDepartment,
+    data: departmentData,
+    isLoading: departmentLoad,
+    fetchError: departmentError,
+  } = usePost();
+
+  const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(newDepartmentSchema),
   });
-  const resetHandler = () => {
-    setViewErrorMsg(false);
-    formRef.current.reset();
+
+  const onSubmit = async (data) => {
+    const res = await handleNewDepartment('/api/v1/department', data);
+    reset({ name: '', memberCount: '' }); //clear fields value
+
+    if (res.response) {
+      setViewErrorMsg(true); // show error
+      setTimeout(() => setViewErrorMsg(false), 2500); //time out hidden error
+      return;
+    }
+    // render
+    dispatch({ type: departmentAction.CREATE, payload: res?.data?.data });
+    //close modal
     document.getElementById('worker-modal').close();
   };
 
-  //Reset Form value
-  useEffect(() => {
-    if (data) {
-      resetHandler();
-    }
-  }, [isLoading]);
-
-  //rerender data
-  useEffect(() => {
-    if (!postData || fetchError) return;
-    if (data?.data) setDepartmentList((pre) => [...pre, data.data]);
-    setPostData(null);
-  }, [data]);
-
-  const onSubmit = async (submitData) => {
-    setPostData(submitData);
-    if (fetchError) {
-      setViewErrorMsg(true);
-      setTimeout(() => {
-        setViewErrorMsg(false);
-      }, 2500);
-    }
-  };
+  const deleteWorker = async () => {};
 
   return (
     <Form
@@ -71,7 +64,7 @@ const NewDepartmentForm = ({ setDepartmentList }) => {
       />
       <p className="text-red-500">{viewErrMsg && '請注意部門名稱是否錯誤'}</p>
       <button className="btn ">
-        {isLoading ? (
+        {departmentLoad ? (
           <span className="loading loading-dots loading-sm"></span>
         ) : (
           '建立'

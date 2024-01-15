@@ -9,15 +9,27 @@ import Input from '../components/Input';
 import useFetch from '../hooks/useFetch';
 //plugin
 import cookie from 'js-cookie';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import loginSchema from '../validation/loginSchema';
 
 const Login = () => {
   const navigator = useNavigate();
   //context state
   const { authData, setAuthData } = useContext(AuthContext);
+  //hook form
+  const { handleSubmit, register, formState } = useForm({
+    resolver: yupResolver(loginSchema),
+    defaultValues: {
+      email: localStorage.getItem('email'),
+    },
+  });
+
+  //memo account
   const [check, setCheck] = useState(
     localStorage.getItem('email') ? true : false
   );
+  //post formData
   const [formData, setFormData] = useState();
   const { data, fetchError, isLoading } = useFetch(
     'post',
@@ -75,11 +87,9 @@ const Login = () => {
       <div className="flex justify-center items-center h-screen">
         <Form
           className="flex flex-col w-full md:w-1/2 gap-5 px-4 border rounded-lg p-6 shadow-md"
-          onSubmit={onSubmit}
-          schema={loginSchema}
-          defaultValues={{
-            email: localStorage.getItem('email'),
-          }}
+          register={register}
+          formState={formState}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <h1 className="text-center text-2xl font-bold">後台管理員</h1>
           <Input name={'email'} type="email" placeholder="工作信箱" />

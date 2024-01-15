@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import propTypes from 'prop-types';
 import { MdCheckBoxOutlineBlank } from 'react-icons/md';
 import html2canvas from 'html2canvas';
@@ -21,7 +21,9 @@ const NewWorkerPDF = ({ workerData }) => {
       const componentWidth = pdf.internal.pageSize.getWidth();
       const componentHeight = pdf.internal.pageSize.getHeight();
       pdf.addImage(imgData, 'PNG', 0, 0, componentWidth, componentHeight);
-      pdf.save();
+      pdf.save(
+        `${workerData?.worker?.name}-${workerData?.worker?.id}-${Date.now()}`
+      );
     } catch (error) {
       console.error('[PDF reader Error]', error);
     }
@@ -44,7 +46,7 @@ const NewWorkerPDF = ({ workerData }) => {
         <div className="grid grid-cols-12 border-2 border-black">
           {/* row-1 start */}
           <div className="col-span-3 p-2 border-r border-b border-black">
-            姓名:{workerData?.worker?.username}
+            姓名:{workerData?.worker?.name}
           </div>
           <div className="col-span-3 p-2 border-r border-b border-black">
             出生日期:
@@ -201,10 +203,13 @@ const NewWorkerPDF = ({ workerData }) => {
         <p>員工帳戶預設密碼:{workerData?.password}</p>
         <p>密碼請自行保管, 並在登入後更改密碼保證帳戶安全</p>
       </div>
-      <div className="flex justify-center my-4">
+      <div className="flex gap-4 justify-center my-4">
         <button className="btn btn-lg" onClick={pdfHandler}>
           下載表單 {isLoading && 'reading..'}
         </button>
+        <Link to={`/workers/account/worker`} className="btn btn-lg">
+          回到員工列表
+        </Link>
       </div>
       <p className="text-center ">
         資訊部同仁請注意, 偽照個資及串改文件公司將追娑法律責任及賠償
@@ -216,5 +221,5 @@ const NewWorkerPDF = ({ workerData }) => {
 export default NewWorkerPDF;
 
 NewWorkerPDF.propTypes = {
-  workerData: propTypes.object,
+  workerData: propTypes.any,
 };

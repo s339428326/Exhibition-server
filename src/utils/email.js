@@ -10,12 +10,13 @@ const nodemailer = require('nodemailer'); //https://nodemailer.com/about/
 
 module.exports = class Email {
   constructor(user, url) {
-    this.to = user.email;
-    this.firstName = user.username;
+    this.to = user?.email;
+    this.firstName = user?.username;
     this.url = url;
     this.form = `Exhibition office <${process.env.EMAIL_FROM_PROD}>`;
   }
 
+  //隱私方法
   newTransport() {
     //
     if (process.env.NODE_ENV === 'production') {
@@ -40,17 +41,51 @@ module.exports = class Email {
   }
 
   /**
-   *
-   * @param {FileName} content : EJS template Choose src/template/email/{content}.ejs
+   * 隱私方法
+   * @param {String} template : EJS template Choose src/template/email/{template}.ejs
    * @param {String} subject
    */
-  async send(content, subject) {
-    console.log(`${__dirname}/../assets/template/email/email.ejs`);
+  async send(template, subject, content, to, bcc) {
+    console.log(template);
     const htmlFile = await ejs.renderFile(
       `${__dirname}/../assets/template/email/email.ejs`,
       {
-        firstName: this.firstName,
+        template,
         url: `${this.url}`,
+        firstName: this.firstName,
+        subject,
+        content,
+      }
+    );
+
+    let mailOption = {
+      from: this.form,
+      subject,
+      html: htmlFile,
+      text: htmlToText(htmlFile),
+    };
+
+    if (to) mailOption = { ...mailOption, to };
+    if (bcc) mailOption = { ...mailOption, bcc };
+
+    //3. Create a transport and send email
+    await this.newTransport().sendMail(mailOption);
+  }
+
+  /**
+   * 隱私方法
+   * 暫時不使用信箱服務無法承受單一用戶, 連續發送
+   * @param {String} template : EJS template Choose src/template/email/{template}.ejs
+   * @param {String} subject
+   */
+  async sendMultiple(template, subject, content, users) {
+    console.log(template);
+    const htmlFile = await ejs.renderFile(
+      `${__dirname}/../assets/template/email/email.ejs`,
+      {
+        template,
+        url: `${this.url}`,
+        firstName: this.firstName,
         subject,
         content,
       }
@@ -58,14 +93,15 @@ module.exports = class Email {
 
     const mailOption = {
       from: this.form,
-      to: this.to,
       subject,
       html: htmlFile,
       text: htmlToText(htmlFile),
     };
 
     //3. Create a transport and send email
-    await this.newTransport().sendMail(mailOption);
+    users.forEach(async (email) => {
+      await this.newTransport().sendMail({ ...mailOption, to: email });
+    });
   }
 
   //新增信箱Template 內容
@@ -80,5 +116,9 @@ module.exports = class Email {
 
   async sendChangeEmail() {
     await this.send('changeEmail', '更換綁定信箱');
+  }
+
+  async sendPlatformEmail(subject, content, users) {
+    await this.send('platformEmail', subject, content, null, users);
   }
 };

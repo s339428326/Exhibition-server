@@ -9,11 +9,16 @@ import {
   PlatformRoute,
 } from './routes';
 
+// Test
+import Test from '@/pages/Test';
+
 function App() {
   return (
     <Routes>
+      <Route path="/test" element={<Test />} />
       <Route path="/" element={<Login />} />
       <Route path="/forgetPassword" element={<ForgetPassword />} />
+      {/* Testing */}
       <Route element={<DefaultLayout />}>
         <Route path="/exhibition/*" element={<ExhibitionRoute />} />
         <Route path="/partner/*" element={<PartnerRoute />} />

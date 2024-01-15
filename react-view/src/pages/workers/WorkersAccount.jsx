@@ -6,25 +6,68 @@ import NewDepartmentForm from './NewDepartmentForm';
 import NewWorkerForm from './NewWorkerForm';
 import DepartmentModal from './DepartmentModal';
 import WorkerModal from './WorkerModal';
+import { useEffect, useState } from 'react';
+
+const WorkerPageModal = ({
+  modalTitle,
+  show,
+  setIsShow,
+  workerData,
+  setWorkerData,
+  workerId,
+  setWorkerList,
+  setDepartmentList,
+  departmentId,
+}) => {
+  const modalContent = {
+    新增員工: (
+      <NewWorkerForm
+        show={show}
+        setIsShow={setIsShow}
+        workerData={workerData}
+        setWorkerData={setWorkerData}
+      />
+    ),
+    員工資料: <WorkerModal workerId={workerId} setWorkerList={setWorkerList} />,
+    新增部門: (
+      <NewDepartmentForm
+        setDepartmentList={setDepartmentList}
+        show={show}
+        setIsShow={setIsShow}
+      />
+    ),
+    部門詳細資訊: (
+      <DepartmentModal
+        id={departmentId}
+        show={show}
+        setIsShow={setIsShow}
+        setDepartmentList={setDepartmentList}
+      />
+    ),
+  };
+
+  return (
+    <Modal modalId="worker-modal" setIsShow={setIsShow}>
+      {/*  新增員工 Modal  content*/}
+      {modalContent[modalTitle]}
+    </Modal>
+  );
+};
 
 const WorkersAccount = ({
   modalTitle,
+  departmentId,
   departmentData,
+  setWorkerList,
+  workerId,
+  setWorkerId,
   setDepartmentList,
   show,
   setIsShow,
+  workerData,
+  setWorkerData,
 }) => {
   useAuth();
-
-  //新增員工表單傳送(目前該子元件控制)
-  // const newWorkerSubmit = (data) => {
-  //   console.log('newWorkerSubmit', data);
-  // };
-
-  //新增部門表單傳送(目前該子元件控制)
-  // const departmentSubmit = (data) => {
-  //   console.log('departmentSubmit', data);
-  // };
 
   return (
     <div className="container mx-auto px-4 pt-12">
@@ -49,23 +92,19 @@ const WorkersAccount = ({
       </div>
 
       {/* Modal */}
-      <Modal modalId="worker-modal" setIsShow={setIsShow}>
-        <h2 className="text-xl font-medium mb-4">{modalTitle}</h2>
-        {/*  新增員工 Modal  content*/}
-        {modalTitle === '新增員工' && (
-          <NewWorkerForm show={show} setIsShow={setIsShow} />
-        )}
-        {/*  員工詳細資訊  */}
-        {modalTitle === '員工資料' && <WorkerModal />}
-        {/* 新增部門 Modal  content */}
-        {modalTitle === '新增部門' && (
-          <NewDepartmentForm setDepartmentList={setDepartmentList} />
-        )}
-        {/* 查看部門詳細資訊 */}
-        {modalTitle === '部門詳細資訊' && (
-          <DepartmentModal id={departmentData} />
-        )}
-      </Modal>
+      <WorkerPageModal
+        modalTitle={modalTitle}
+        departmentId={departmentId}
+        departmentData={departmentData}
+        setWorkerList={setWorkerList}
+        workerId={workerId}
+        setWorkerId={setWorkerId}
+        setDepartmentList={setDepartmentList}
+        show={show}
+        setIsShow={setIsShow}
+        workerData={workerData}
+        setWorkerData={setWorkerData}
+      />
       {/* outlet component:DepartmentPanel, WorkerPanel  */}
       <Outlet />
     </div>
@@ -76,7 +115,7 @@ export default WorkersAccount;
 
 WorkersAccount.propTypes = {
   modalTitle: propTypes.string,
-  departmentData: propTypes.array,
+  departmentId: propTypes.string,
   setDepartmentList: propTypes.func,
   show: propTypes.bool,
   setIsShow: propTypes.func,

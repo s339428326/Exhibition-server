@@ -27,6 +27,18 @@ router
 router
   .route('/:id')
   .get(workerController.getWorker)
+  .patch(authController.restrictTo('admin'), workerController.updateWorker)
   .delete(authController.restrictTo('admin'), workerController.deleteWorker);
+
+router
+  .route('/changeRole/:id')
+  .post(authController.restrictTo('admin'), workerController.changeRole);
+
+router
+  .route('/changeActive/:id')
+  .post(
+    authController.restrictTo('admin', 'manger'),
+    workerController.changeRole
+  );
 
 module.exports = router;

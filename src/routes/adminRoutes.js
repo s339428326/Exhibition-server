@@ -9,6 +9,8 @@ const Worker = require('../model/workerModel');
 const router = express.Router();
 
 //以下為最高權限, CRUD前台普通用戶
-router.use(authController.protect(Worker), authController.restrictTo('admin'));
+// router.use(authController.protect(Worker), authController.restrictTo('admin'));
+
+router.route('/worker').post(adminController.createWorker);
 
 module.exports = router;

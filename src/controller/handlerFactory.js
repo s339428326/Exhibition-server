@@ -1,13 +1,22 @@
-//CRUD Fac.
 const AppError = require('../utils/AppError');
 const APIFeatures = require('../utils/APIFeatures');
 const catchAsync = require('../utils/catchAsync');
 const imgur = require('../utils/imgurHandler');
+
 //Get All
-exports.getAll = (Model) =>
+/**
+ *
+ * @param {Model} Model
+ * @param {Array} aggregate
+ * @returns {Response}
+ */
+exports.getAll = (Model, aggregate) =>
   catchAsync(async (req, res, next) => {
     //若想要輸出 model 名稱可以使用 modelName
     const modelName = Model.modelName.toLowerCase();
+
+    //只計算總數不檢索[很慢代思考]
+    // const counterDoc = await Model.countDocuments({});
 
     const features = new APIFeatures(Model.find(), req.query)
       .searchModel()
