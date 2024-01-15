@@ -5,6 +5,7 @@ const useFetch = (method = 'get', dataUrl, backData = null, path) => {
   const [data, setData] = useState(null);
   const [fetchError, setFetchError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
+  const [fetchCount, setFetchCount] = useState(0);
 
   useEffect(() => {
     if (method.toLocaleLowerCase() === 'post' && !backData) return;
@@ -27,9 +28,11 @@ const useFetch = (method = 'get', dataUrl, backData = null, path) => {
           console.timeEnd(`${dataUrl} 請求時間`);
       }
     })();
-  }, [backData, dataUrl, method, path]);
+  }, [backData, dataUrl, method, path, fetchCount]);
 
-  return { data, setData, fetchError, isLoading };
+  const reFetchFn = () => setFetchCount((pre) => pre + 1);
+
+  return { data, setData, fetchError, isLoading, reFetchFn };
 };
 
 export default useFetch;

@@ -28,7 +28,7 @@ const EMAIL_TYPES = [
 const FILTER_INIT_DATA = {
   creator: '',
   checker: '',
-  classes: '',
+  type: '',
   isApproved: 'all',
 };
 
@@ -51,6 +51,7 @@ const PlatformFilter = ({
   setFilterData,
   getEmailState,
   setEmailList,
+  reFetchEmail,
 }) => {
   const filterRef = useOutSideClick(() => {
     setIsShowFilter(false);
@@ -67,7 +68,8 @@ const PlatformFilter = ({
         className="btn btn-xs"
         type="button"
         onClick={() => {
-          setEmailList(getEmailState?.platformemailData);
+          // setEmailList(getEmailState?.platformemailData);
+          reFetchEmail();
           setFilterData(FILTER_INIT_DATA);
           setStartDate('');
           setEndDate('');
@@ -119,10 +121,10 @@ const PlatformFilter = ({
           信件分類
         </label>
         <select
-          value={filterData.classes}
+          value={filterData.type}
           onChange={(e) =>
             setFilterData((pre) => {
-              return { ...pre, classes: e.target.value };
+              return { ...pre, type: e.target.value };
             })
           }
           className="select select-bordered select-sm"
@@ -451,10 +453,12 @@ const PlatformEmail = () => {
     data: getEmailState,
     fetchError: emailListError,
     isLoading: emailListLoad,
+    reFetchFn: reFetchEmail,
   } = useFetch('get', '/api/v1/platformEmail');
+
   const [currentEmail, setCurrentEmail] = useState();
 
-  //email view init
+  //email view init©
   useEffect(() => {
     if (getEmailState?.platformemailData) {
       setCurrentEmail(getEmailState?.platformemailData[0]);
@@ -511,6 +515,11 @@ const PlatformEmail = () => {
       case 'false':
         newList = newList.filter((it) => !it.isApproved);
         break;
+    }
+
+    // switch(filterData.type)
+    if (filterData.type.length) {
+      newList = newList.filter((it) => it.type === filterData.type);
     }
 
     if (filterData.creator.length) {
@@ -649,6 +658,7 @@ const PlatformEmail = () => {
             setIsShowFilter={setIsShowFilter}
             getEmailState={getEmailState}
             setEmailList={setEmailList}
+            reFetchEmail={reFetchEmail}
           />
           <ul className="flex flex-col gap-2 overflow-y-scroll h-[80vh]">
             {emailList
