@@ -106,16 +106,22 @@ module.exports = class Email {
 
   //新增信箱Template 內容
   //template(EJS Template Name, subject), call this class send
-  async sendWelcome() {
-    await this.send('welcome', '歡迎使用 Search Art Fair!');
+  async sendWelcome(user) {
+    await this.send('welcome', '歡迎使用 Search Art Fair!', null, user, null);
   }
 
-  async sendResetPassword() {
-    await this.send('forgetPassword', 'Search Art Fair 更換密碼');
+  async sendResetPassword(user) {
+    await this.send(
+      'forgetPassword',
+      'Search Art Fair 更換密碼',
+      null,
+      user,
+      null
+    );
   }
 
-  async sendChangeEmail() {
-    await this.send('changeEmail', '更換綁定信箱');
+  async sendChangeEmail(user) {
+    await this.send('changeEmail', '更換綁定信箱', null, user, null);
   }
 
   async sendPlatformEmail(subject, content, users) {

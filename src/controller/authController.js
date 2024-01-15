@@ -141,7 +141,7 @@ exports.singUp = (model) =>
             }`
           ]
         }/Exhibition-front-end/`
-      ).sendWelcome();
+      ).sendWelcome(data?.email);
     }
 
     //未被建立返回 客製 Error
@@ -250,7 +250,6 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
 
   if (!user) return next(new AppError('此帳戶不存在', 404));
   const resetToken = user.createPasswordResetToken();
-
   await user.save({ validateBeforeSave: false });
 
   //3.Send it to user's email
@@ -265,12 +264,13 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   }/Exhibition-front-end/#/resetPassword/${resetToken}`;
 
   try {
-    await new Email(user, resetURL).sendResetPassword();
+    await new Email(user, resetURL).sendResetPassword(user?.email);
     res.status(200).json({
       status: 'success',
       message: '已發送Token 至信箱',
     });
   } catch (error) {
+    console.log(error);
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
 
@@ -383,7 +383,7 @@ exports.changeEmail = catchAsync(async (req, res, next) => {
   }/Exhibition-front-end/#/changeEmail/${resetToken}`;
 
   try {
-    await new Email(user, resetURL).sendChangeEmail(); //fix
+    await new Email(user, resetURL).sendChangeEmail(user?.email); //fix
     res.status(200).json({
       status: 'success',
       message: '已發送Token 至信箱',

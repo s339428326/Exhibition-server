@@ -18,7 +18,7 @@ const useFetch = (method = 'get', dataUrl, backData = null, path) => {
         setData(res.data);
         setFetchError(null);
       } catch (error) {
-        console.log('[Err]', error.response.data.message);
+        console.log('[Err]', error?.response.data.message);
         setData(null);
         setFetchError(error?.response.data.message);
       } finally {

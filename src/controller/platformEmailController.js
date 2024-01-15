@@ -49,17 +49,22 @@ exports.sendEmail = catchAsync(async (req, res, next) => {
   const users = (await User.find({}, 'email')).map((it) => it.email);
 
   // PlatformEmail 平台信件資料庫schema
+  // await new Email(
+  //   null,
+  //   `${
+  //     process.env?.[
+  //       `${
+  //         process.env.NODE_ENV === 'production'
+  //           ? 'FRONT_END_SERVER'
+  //           : 'FRONT_END_LOCAL'
+  //       }`
+  //     ]
+  //   }/Exhibition-front-end/`
+  // ).sendPlatformEmail(subject, content, users);
+
   await new Email(
     null,
-    `${
-      process.env?.[
-        `${
-          process.env.NODE_ENV === 'production'
-            ? 'FRONT_END_SERVER'
-            : 'FRONT_END_LOCAL'
-        }`
-      ]
-    }/Exhibition-front-end/`
+    `${process.env?.['FRONT_END_LOCAL']}/Exhibition-front-end/`
   ).sendPlatformEmail(subject, content, users);
 
   res.status(200).json({

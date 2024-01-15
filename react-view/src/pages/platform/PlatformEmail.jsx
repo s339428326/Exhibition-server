@@ -352,7 +352,8 @@ const EmailView = ({
     );
     //find index
     const index = emailList.findIndex((it) => it?.id === currentEmail?._id);
-    console.log(index);
+    if (index === -1 || !res?.data)
+      return console.log('BUG log', res.data, index);
     setEmailList((pre) => {
       const newList = [...pre];
       newList.splice(index, 1, res.data.data);

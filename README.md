@@ -62,4 +62,6 @@ handlerController(CRUD 生成工廠)
 ### Email 寄送
 
 npm run dev => Email 使用 mailtrap
+
 npm run prod => Email 使用 sendGrid
+sendGird https://app.sendgrid.com/(舊版)
