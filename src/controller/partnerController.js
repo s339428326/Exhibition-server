@@ -52,8 +52,9 @@ exports.activeHostPartner = catchAsync(async (req, res, next) => {
             : 'FRONT_END_LOCAL'
         }`
       ]
-    }/Exhibition-front-end/`
-  ).send();
+    }/#/admin/login`
+  ).sendPartnerActiveEmail(partner);
+
   res.status(200).json({
     status: 'success',
     partner,

@@ -72,6 +72,27 @@ module.exports = class Email {
     await this.newTransport().sendMail(mailOption);
   }
 
+  async sendPartnerEmail(template, subject, to) {
+    const htmlFile = await ejs.renderFile(
+      `${__dirname}/../assets/template/email/email.ejs`,
+      {
+        template,
+        url: `${this.url}`,
+        subject,
+        firstPassword: to?.firstPassword,
+      }
+    );
+
+    let mailOption = {
+      from: this.form,
+      subject,
+      to: to?.company?.email,
+      html: htmlFile,
+      text: htmlToText(htmlFile),
+    };
+    await this.newTransport().sendMail(mailOption);
+  }
+
   /**
    * 隱私方法
    * 暫時不使用信箱服務無法承受單一用戶, 連續發送
@@ -79,7 +100,6 @@ module.exports = class Email {
    * @param {String} subject
    */
   async sendMultiple(template, subject, content, users) {
-    console.log(template);
     const htmlFile = await ejs.renderFile(
       `${__dirname}/../assets/template/email/email.ejs`,
       {
@@ -130,13 +150,11 @@ module.exports = class Email {
     await this.send('platformEmail', subject, content, null, users);
   }
 
-  async sendPartnerActiveEmail(user) {
-    await this.send(
+  async sendPartnerActiveEmail(partner) {
+    await this.sendPartnerEmail(
       'partnerActive',
       'Search Art Fair 夥伴帳戶已啟用',
-      null,
-      user,
-      null
+      partner
     );
   }
 };
