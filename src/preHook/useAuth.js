@@ -46,6 +46,7 @@ module.exports = function useAuth(model) {
   //auth
   //儲存進MongoDb前，對password 欄位加密
   model.pre('save', async function (next) {
+    console.log(this.password);
     if (!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, 12);
     this.confirmPassword ??= undefined;

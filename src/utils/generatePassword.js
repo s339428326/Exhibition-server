@@ -12,8 +12,4 @@ const generatePassword = (len) => {
   return password;
 };
 
-const res = generatePassword(8);
-
-console.log(res);
-
 module.exports = generatePassword;

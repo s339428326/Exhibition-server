@@ -106,6 +106,7 @@ module.exports = class Email {
 
   //新增信箱Template 內容
   //template(EJS Template Name, subject), call this class send
+  //前台信件
   async sendWelcome(user) {
     await this.send('welcome', '歡迎使用 Search Art Fair!', null, user, null);
   }
@@ -124,7 +125,18 @@ module.exports = class Email {
     await this.send('changeEmail', '更換綁定信箱', null, user, null);
   }
 
+  //後台信件
   async sendPlatformEmail(subject, content, users) {
     await this.send('platformEmail', subject, content, null, users);
+  }
+
+  async sendPartnerActiveEmail(user) {
+    await this.send(
+      'partnerActive',
+      'Search Art Fair 夥伴帳戶已啟用',
+      null,
+      user,
+      null
+    );
   }
 };

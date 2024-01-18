@@ -6,7 +6,7 @@ const Modal = ({ children, modalId, setIsShow }) => {
   useEffect(() => {
     const listEscKeyHandler = document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        setIsShow(false);
+        setIsShow?.(false);
       }
     });
     return () => document.removeEventListener('keydown', listEscKeyHandler);
@@ -17,7 +17,9 @@ const Modal = ({ children, modalId, setIsShow }) => {
       <div className="modal-box">
         <form method="dialog">
           <button
-            onClick={() => setIsShow(false)}
+            onClick={() => {
+              setIsShow?.(false);
+            }}
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
           >
             ✕

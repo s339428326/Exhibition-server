@@ -187,7 +187,7 @@ const EmailEdit = ({
     setIsEdit(false);
     setEmailSendErr('');
     setEmailData(EMAIL_INIT_DATA);
-    editorRef.current.setContent('');
+    editorRef?.current?.setContent('');
   };
 
   useKeyDown('Escape', handleBackEdit);

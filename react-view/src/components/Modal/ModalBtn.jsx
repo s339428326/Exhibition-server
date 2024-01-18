@@ -3,7 +3,7 @@ import propTypes from 'prop-types';
 const ModalBtn = ({ className, children, modalId, onClick, ...rest }) => {
   const modalHandler = () => {
     document.getElementById(modalId).showModal();
-    onClick();
+    onClick?.();
   };
 
   return (

@@ -140,7 +140,7 @@ exports.singUp = (model) =>
                 : 'FRONT_END_LOCAL'
             }`
           ]
-        }/Exhibition-front-end/`
+        }`
       ).sendWelcome(data?.email);
     }
 

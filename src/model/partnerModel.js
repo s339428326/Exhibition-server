@@ -1,13 +1,16 @@
 //展覽廠商
 const mongoose = require('mongoose');
 const validator = require('validator');
+const cryptoMethods = require('../utils/cryptoMethods');
 const useAuth = require('../preHook/useAuth');
 
 const partnerSchema = new mongoose.Schema({
-  username: {
+  //聯絡人
+  name: {
     type: String,
     default: '未設置聯絡人名稱',
   },
+  //帳戶權限
   role: {
     type: String,
     enum: {
@@ -16,18 +19,29 @@ const partnerSchema = new mongoose.Schema({
       message: '出現錯誤權限用戶',
     },
   },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
+  //合作意向
+  comment: String,
+  //公司資料
   company: {
+    //名稱
     name: {
       type: String,
+      maxLength: [12, '請勿超過12個字'],
       required: true,
     },
+    //地址
     address: {
       type: String,
-      required: true,
+      required: [true, '請填入地址'],
     },
+    //信箱
     email: {
       type: String,
-      required: true,
+      required: [true, '請填入信箱'],
     },
     //插入展覽Data
     exhibition: [
@@ -37,15 +51,17 @@ const partnerSchema = new mongoose.Schema({
       },
     ],
     //確認帳戶是否以被後台接受申請
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
+  },
+  createAt: {
+    type: Date,
+    default: () => new Date(),
+  },
+  firstPassword: {
+    type: String,
   },
   password: {
     type: String,
     minLength: [8, '密碼請勿低於8個字元'],
-    required: [true, '密碼為必填選項'],
     select: false,
     validate: [
       function (value) {
@@ -54,20 +70,18 @@ const partnerSchema = new mongoose.Schema({
       '密碼包含至少一個字母和一個數字，長度至少為8位',
     ],
   },
-  confirmPassword: {
-    type: String,
-    required: [true, '請重新確認密碼'],
-    validate: [
-      function (value) {
-        return this.password === value;
-      },
-      '請確認輸入密碼是否一致',
-    ],
+  //審查帳戶人員
+  checker: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Worker',
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
 });
+
+useAuth(partnerSchema);
+Object.assign(partnerSchema.methods, cryptoMethods);
 
 const Partner = mongoose.model('Partner', partnerSchema);
 
@@ -75,7 +89,5 @@ const Partner = mongoose.model('Partner', partnerSchema);
 partnerSchema.pre(/^find/, function (next) {
   this.exhibition.populate('Exhibition');
 });
-
-useAuth(partnerSchema);
 
 module.exports = Partner;
