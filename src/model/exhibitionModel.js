@@ -32,10 +32,16 @@ const exhibitionSchema = new mongoose.Schema(
       type: String,
     },
     // 票種
-    tickGroup: [{ ticketType: String, price: Number }],
+    tickGroup: [
+      { ticketType: String, price: Number, max: Number, soldQuantity: Number },
+    ],
     location: {
       address: {
         type: String,
+        required: true,
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
         required: true,
       },
     },
@@ -44,6 +50,16 @@ const exhibitionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    //展覽票機設置
+    ticketMachine: [
+      {
+        name: String,
+        type: {
+          type: String,
+          enum: ['open', 'close'],
+        },
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },

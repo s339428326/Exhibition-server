@@ -62,6 +62,55 @@ exports.createUser = handlerFactory.create(User);
 exports.patchUser = handlerFactory.patchOne(User);
 exports.deleteUser = handlerFactory.deleteOne(User);
 
+//取消最愛展覽
+exports.deleteTrackExhibition = catchAsync(async (req, res, next) => {
+  const { _id } = req?.user;
+  const user = await User.findById(_id);
+  if (!user) return next(new AppError('請確認User 是存在', 403));
+  if (!user.trackList.find((it) => `${it?._id}` === req?.params?.id))
+    return next(new AppError('此展覽不存在於展覽列表中', 403));
+
+  user.trackList = user.trackList.filter(
+    (item) => `${item?._id}` !== req?.params?.id
+  );
+
+  user.save({ validateBeforeSave: true });
+
+  res.status(200).json({
+    status: 'success',
+    message: `delete ${_id}`,
+  });
+});
+
+// 取得用戶所有最愛展覽資料
+exports.getUserTrackList = catchAsync(async (req, res, next) => {
+  const { _id } = req?.user;
+  const user = await User.findById(_id);
+  if (!user) return next(new AppError('請確認User 是存在', 403));
+
+  res.status(200).json({
+    status: 'success',
+    data: user.trackList,
+  });
+});
+
+//新增用戶最愛展覽
+exports.addTrackExhibition = catchAsync(async (req, res, next) => {
+  const { _id } = req?.user;
+  const user = await User.findById(_id);
+  if (!user) return next(new AppError('請確認User 是存在', 403));
+  if (user.trackList.includes(req?.params?.id))
+    return next(new AppError('此展覽已存在', 403));
+  user.trackList.push(req?.params?.id);
+
+  user.save({ validateBeforeSave: true });
+
+  res.status(200).json({
+    status: 'success',
+    data: user.trackList,
+  });
+});
+
 //更個人 Email 暱稱
 exports.updateOwnInfo = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm)

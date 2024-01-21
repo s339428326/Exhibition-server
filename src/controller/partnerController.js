@@ -36,6 +36,7 @@ exports.activeHostPartner = catchAsync(async (req, res, next) => {
   //isActive
   const randomPassword = generatePassword(8);
 
+  partner.role = 'host';
   partner.isActive = true;
   partner.firstPassword = randomPassword;
   partner.password = randomPassword;
@@ -61,11 +62,19 @@ exports.activeHostPartner = catchAsync(async (req, res, next) => {
   });
 });
 
-/////////////待開發///////////////////
-
-//合作夥伴host帳戶新增, 展覽員工
-exports.partnerAddInspector = catchAsync(async (req, res, next) => {
+/////////////夥伴專用///////////////////
+//合作夥伴新增現場員工
+exports.partnerAddSitePerson = catchAsync(async (req, res, next) => {
   res.state(200).json({
     status: 'test',
+  });
+});
+
+//取得廠商申請通過所有展覽列筆
+exports.getPartnerExhibitions = catchAsync(async (req, res, next) => {
+  const Partner = await Partner.findById(req.params?.id);
+
+  res.status(200).json({
+    status: 'success',
   });
 });

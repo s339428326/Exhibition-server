@@ -15,7 +15,7 @@ const partnerSchema = new mongoose.Schema({
     type: String,
     enum: {
       //檢票人員, 主辦人
-      values: ['host', 'inspector'],
+      values: ['host'],
       message: '出現錯誤權限用戶',
     },
   },
@@ -75,6 +75,16 @@ const partnerSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Worker',
   },
+  //展覽票機設置
+  ticketMachine: [
+    {
+      name: String,
+      type: {
+        type: String,
+        enum: ['open', 'close'],
+      },
+    },
+  ],
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

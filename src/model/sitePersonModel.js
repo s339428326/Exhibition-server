@@ -1,27 +1,39 @@
-//用戶
 const mongoose = require('mongoose');
-const validator = require('validator');
-const useAuth = require('../preHook/useAuth');
-const cryptoMethods = require('../utils/cryptoMethods');
 
-const userSchema = new mongoose.Schema(
+const sitPersonSchema = new mongoose.Schema(
   {
+    //用戶名稱
     username: {
       type: String,
       trim: true,
-      minLength: [2, '暱稱請勿小於2字元'],
-      maxLength: [20, '暱稱請勿超過20字元'],
       default: function () {
         return this.email.split('@')[0];
       },
     },
+    //員工真實名稱
+    name: {
+      type: String,
+    },
+    //部門名稱
+    department: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Department',
+    },
+    //職稱
+    position: {
+      type: String,
+      default: '未設置',
+    },
+    //信箱
     email: {
       type: String,
       unique: true,
+      index: true,
       trim: true,
       validate: [validator.isEmail, '請輸入有效信箱格式'],
       required: [true, '使用者必須包含email'],
     },
+    //頭像
     avatar: {
       imageUrl: {
         type: String,
@@ -32,23 +44,28 @@ const userSchema = new mongoose.Schema(
         default: '',
       },
     },
+    //公司用電話
     phone: {
       type: String,
     },
+    //網站管理權限
     role: {
       type: String,
-      default: 'user',
+      default: 'normal',
       required: true,
       enum: {
-        // 用戶, 檢票人員, 主辦人, 後台管理權限
-        values: ['user', 'inspector', 'host', 'admin'],
+        // 員工, 經理, 最高管理
+        values: ['normal', 'manger', 'admin'],
         message: '出現錯誤權限用戶',
       },
     },
+    //帳戶是否凍結
     isActive: {
       type: Boolean,
       default: true,
     },
+    exhibitions: [{ type: mongoose.Schema.ObjectId, ref: 'exhibition' }],
+    //
     password: {
       type: String,
       minLength: [8, '密碼請勿低於8個字元'],
@@ -77,12 +94,6 @@ const userSchema = new mongoose.Schema(
     tryLoginTime: {
       type: Date,
     },
-    trackList: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Exhibition',
-      },
-    ],
   },
   {
     strict: true, //(重要)除了設計中的資料欄位，其他不會儲存到MongoDB中
@@ -91,17 +102,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-//auth pre hook
-useAuth(userSchema);
-
-//schema methods
-Object.assign(userSchema.methods, cryptoMethods);
-
-userSchema.pre(/^find/, function (next) {
-  this.populate('trackList');
-  next();
-});
-
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+export const SitPerson = mongoose.model('SitPerson', sitPersonSchema);

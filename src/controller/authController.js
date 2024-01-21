@@ -122,10 +122,12 @@ exports.singUp = (model) =>
     if (!email || !password || !confirmPassword)
       return next(new AppError('註冊失敗！ 請確認內容是否填寫正確'));
 
+    if (password !== confirmPassword)
+      return next(new AppError('請確認密碼是否一致', 403));
+
     const data = await model.create({
       email,
       password,
-      confirmPassword,
     });
 
     //[Feature] 針對公司員工, 添加額外mail Template
@@ -152,6 +154,8 @@ exports.singUp = (model) =>
 
 exports.login = (roles, model) =>
   catchAsync(async (req, res, next) => {
+    const modelName = model?.modelName?.toLowerCase();
+
     const { email, password } = req.body;
 
     if (!email || !password)
@@ -160,9 +164,21 @@ exports.login = (roles, model) =>
         400
       );
 
-    const user = await model
-      .findOne({ email })
-      .select('+password +loginCount +loginTime +isActive');
+    let user = null;
+
+    switch (modelName) {
+      case 'partner':
+        user = await model
+          .findOne({ 'company.email': email })
+          .select('+password +loginCount +loginTime +isActive -firstPassword');
+
+        break;
+      default:
+        user = await model
+          .findOne({ email })
+          .select('+password +loginCount +loginTime +isActive');
+        break;
+    }
 
     if (!user || !user.isActive)
       return next(new AppError('請重新確認信箱與密碼'), 404);
@@ -308,7 +324,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .digest('hex');
 
   const user = await User.findOne({
-    passwordResetToken: hashedToken,
+    passwordResetToken: hashezdToken,
     passwordResetExpires: { $gt: Date.now() },
   });
 
@@ -316,7 +332,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   //完成密碼更改
   user.password = req.body.password;
-  user.confirmPassword = req.body.confirmPassword;
   user.passwordResetToken = undefined; //重置ResetToken
   user.passwordResetExpires = undefined; //重置ResetExpires
 

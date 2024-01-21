@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
  *
  * 針對使用schema 添加 欄位：
  *  password
- *  confirmPassword
  *  passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
@@ -26,17 +25,7 @@ const bcrypt = require('bcrypt');
         },
         '密碼包含至少一個字母和一個數字，長度至少為8位',
       ],
-    },
-    confirmPassword: {
-      type: String,
-      required: [true, '請重新確認密碼'],
-      validate: [
-        function (value) {
-          return this.password === value;
-        },
-        '請確認輸入密碼是否一致',
-      ],
-    },
+    }
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
@@ -46,11 +35,8 @@ module.exports = function useAuth(model) {
   //auth
   //儲存進MongoDb前，對password 欄位加密
   model.pre('save', async function (next) {
-    console.log(this.password);
     if (!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, 12);
-    this.confirmPassword ??= undefined;
-
     next();
   });
 

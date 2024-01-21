@@ -11,7 +11,7 @@ const router = express.Router();
 // Partner
 router
   .route('/login')
-  .post(authController.login(['inspector', 'host']), Partner);
+  .post(authController.login(['inspector', 'host'], Partner));
 
 // Worker 後台工作人員用
 router.use(authController.protect(Worker));
@@ -22,5 +22,9 @@ router
   .post(partnerController.createPartner);
 
 router.route('/active/:id').post(partnerController.activeHostPartner);
+
+router
+  .route('/partner/exhibition/:id')
+  .get(partnerController.getPartnerExhibitions);
 
 module.exports = router;
