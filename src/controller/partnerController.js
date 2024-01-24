@@ -72,9 +72,10 @@ exports.partnerAddSitePerson = catchAsync(async (req, res, next) => {
 
 //取得廠商申請通過所有展覽列筆
 exports.getPartnerExhibitions = catchAsync(async (req, res, next) => {
-  const Partner = await Partner.findById(req.params?.id);
+  const partner = await Partner.findById(req.params?.id);
 
   res.status(200).json({
     status: 'success',
+    data: partner.e,
   });
 });

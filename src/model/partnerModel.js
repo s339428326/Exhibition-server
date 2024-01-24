@@ -75,16 +75,7 @@ const partnerSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Worker',
   },
-  //展覽票機設置
-  ticketMachine: [
-    {
-      name: String,
-      type: {
-        type: String,
-        enum: ['open', 'close'],
-      },
-    },
-  ],
+
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

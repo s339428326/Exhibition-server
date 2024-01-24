@@ -253,7 +253,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   //save newPassword
   user.password = password;
-  user.passwordConfirm = passwordConfirm;
 
   await user.save();
 
@@ -277,7 +276,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
           : 'FRONT_END_LOCAL'
       }`
     ]
-  }/Exhibition-front-end/#/resetPassword/${resetToken}`;
+  }/#/resetPassword/${resetToken}`;
 
   try {
     await new Email(user, resetURL).sendResetPassword(user?.email);
@@ -324,7 +323,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .digest('hex');
 
   const user = await User.findOne({
-    passwordResetToken: hashezdToken,
+    passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
 
